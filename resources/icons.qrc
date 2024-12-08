@@ -1,0 +1,19 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/icons">
+        <file>icons/connect.png</file>
+        <file>icons/disconnect.png</file>
+        <file>icons/upload.png</file>
+        <file>icons/download.png</file>
+        <file>icons/refresh.png</file>
+        <file>icons/task.png</file>
+        <file>icons/settings.png</file>
+        <file>icons/history.png</file>
+        <file>icons/help.png</file>
+        <file>icons/down-arrow.png</file>
+        <file>icons/down-arrow-white.png</file>
+        <file>icons/folder.png</file>
+        <file>icons/file.png</file>
+        <file>icons/pin.png</file>
+    </qresource>
+</RCC>

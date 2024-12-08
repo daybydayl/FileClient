@@ -1,0 +1,939 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{36339F4F-A406-3599-8AD4-B33B90C6D96A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>FileClient</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\myinstall\VMShare\FileClient\build\bin\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">FileClient.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">FileClient</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\myinstall\VMShare\FileClient\build\bin\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">FileClient.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">FileClient</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\myinstall\VMShare\FileClient\build\bin\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">FileClient.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">FileClient</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\myinstall\VMShare\FileClient\build\bin\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">FileClient.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">FileClient</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\myinstall\VMShare\FileClient\build;D:\myinstall\VMShare\FileClient;D:\myinstall\VMShare\FileClient\build\FileClient_autogen\include_Debug;D:\myinstall\VMShare\FileClient\src;D:\myinstall\VMShare\FileClient\shared;D:\myinstall\protobuf\protobuf64\include;D:\myinstall\VMShare\FileClient\protos;D:\myinstall\OpenSSL\OpenSSL-Win64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtNetwork;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;_UNICODE;UNICODE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;NOMINMAX;PROTOBUF_USE_DLLS;GOOGLE_PROTOBUF_CMAKE_BUILD;_HAS_AUTO_PTR_ETC=1;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QT_NETWORK_LIB;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;_UNICODE;UNICODE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;NOMINMAX;PROTOBUF_USE_DLLS;GOOGLE_PROTOBUF_CMAKE_BUILD;_HAS_AUTO_PTR_ETC=1;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QT_NETWORK_LIB;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\myinstall\VMShare\FileClient\build;D:\myinstall\VMShare\FileClient;D:\myinstall\VMShare\FileClient\build\FileClient_autogen\include_Debug;D:\myinstall\VMShare\FileClient\src;D:\myinstall\VMShare\FileClient\shared;D:\myinstall\protobuf\protobuf64\include;D:\myinstall\VMShare\FileClient\protos;D:\myinstall\OpenSSL\OpenSSL-Win64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtNetwork;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\myinstall\VMShare\FileClient\build;D:\myinstall\VMShare\FileClient;D:\myinstall\VMShare\FileClient\build\FileClient_autogen\include_Debug;D:\myinstall\VMShare\FileClient\src;D:\myinstall\VMShare\FileClient\shared;D:\myinstall\protobuf\protobuf64\include;D:\myinstall\VMShare\FileClient\protos;D:\myinstall\OpenSSL\OpenSSL-Win64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtNetwork;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PreBuildEvent>
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message>Automatic MOC and UIC for target FileClient</Message>
+      <Command>setlocal
+cd D:\myinstall\VMShare\FileClient\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autogen D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient_autogen.dir/AutogenInfo.json Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Message>					</Message>
+      <Command>setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64/bin/Qt5Core.dll D:/myinstall/VMShare/FileClient/build/bin/Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64/bin/Qt5Gui.dll D:/myinstall/VMShare/FileClient/build/bin/Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64/bin/Qt5Widgets.dll D:/myinstall/VMShare/FileClient/build/bin/Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64/bin/Qt5Network.dll D:/myinstall/VMShare/FileClient/build/bin/Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/protobuf/protobuf64/lib/libprotobufd.dll D:/myinstall/VMShare/FileClient/build/bin/Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/OpenSSL/OpenSSL-Win64/bin/libcrypto-1_1-x64.dll D:/myinstall/VMShare/FileClient/build/bin/Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Widgetsd.lib;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Networkd.lib;D:\myinstall\protobuf\protobuf64\lib\libprotobufd.lib;D:\myinstall\protobuf\protobuf64\lib\libprotobuf-lited.lib;D:\myinstall\OpenSSL\OpenSSL-Win64\lib\libcrypto.lib;D:\myinstall\protobuf\protobuf64\lib\libprotobufd.lib;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Guid.lib;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Cored.lib;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\qtmaind.lib;D:\myinstall\protobuf\protobuf64\lib\libprotobuf-lited.lib;D:\myinstall\OpenSSL\OpenSSL-Win64\lib\libcrypto.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/myinstall/VMShare/FileClient/build/Debug/FileClient.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/myinstall/VMShare/FileClient/build/bin/Debug/FileClient.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\myinstall\VMShare\FileClient\build;D:\myinstall\VMShare\FileClient;D:\myinstall\VMShare\FileClient\build\FileClient_autogen\include_Release;D:\myinstall\VMShare\FileClient\src;D:\myinstall\VMShare\FileClient\shared;D:\myinstall\protobuf\protobuf64\include;D:\myinstall\VMShare\FileClient\protos;D:\myinstall\OpenSSL\OpenSSL-Win64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtNetwork;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_UNICODE;UNICODE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;NOMINMAX;PROTOBUF_USE_DLLS;GOOGLE_PROTOBUF_CMAKE_BUILD;_HAS_AUTO_PTR_ETC=1;QT_CORE_LIB;QT_NO_DEBUG;QT_GUI_LIB;QT_WIDGETS_LIB;QT_NETWORK_LIB;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_UNICODE;UNICODE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;NOMINMAX;PROTOBUF_USE_DLLS;GOOGLE_PROTOBUF_CMAKE_BUILD;_HAS_AUTO_PTR_ETC=1;QT_CORE_LIB;QT_NO_DEBUG;QT_GUI_LIB;QT_WIDGETS_LIB;QT_NETWORK_LIB;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\myinstall\VMShare\FileClient\build;D:\myinstall\VMShare\FileClient;D:\myinstall\VMShare\FileClient\build\FileClient_autogen\include_Release;D:\myinstall\VMShare\FileClient\src;D:\myinstall\VMShare\FileClient\shared;D:\myinstall\protobuf\protobuf64\include;D:\myinstall\VMShare\FileClient\protos;D:\myinstall\OpenSSL\OpenSSL-Win64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtNetwork;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\myinstall\VMShare\FileClient\build;D:\myinstall\VMShare\FileClient;D:\myinstall\VMShare\FileClient\build\FileClient_autogen\include_Release;D:\myinstall\VMShare\FileClient\src;D:\myinstall\VMShare\FileClient\shared;D:\myinstall\protobuf\protobuf64\include;D:\myinstall\VMShare\FileClient\protos;D:\myinstall\OpenSSL\OpenSSL-Win64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtNetwork;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PreBuildEvent>
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message>Automatic MOC and UIC for target FileClient</Message>
+      <Command>setlocal
+cd D:\myinstall\VMShare\FileClient\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autogen D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient_autogen.dir/AutogenInfo.json Release
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Message>					</Message>
+      <Command>setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64/bin/Qt5Core.dll D:/myinstall/VMShare/FileClient/build/bin/Release
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64/bin/Qt5Gui.dll D:/myinstall/VMShare/FileClient/build/bin/Release
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64/bin/Qt5Widgets.dll D:/myinstall/VMShare/FileClient/build/bin/Release
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64/bin/Qt5Network.dll D:/myinstall/VMShare/FileClient/build/bin/Release
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/protobuf/protobuf64/lib/libprotobufd.dll D:/myinstall/VMShare/FileClient/build/bin/Release
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/OpenSSL/OpenSSL-Win64/bin/libcrypto-1_1-x64.dll D:/myinstall/VMShare/FileClient/build/bin/Release
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Widgets.lib;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Network.lib;D:\myinstall\protobuf\protobuf64\lib\libprotobufd.lib;D:\myinstall\protobuf\protobuf64\lib\libprotobuf-lited.lib;D:\myinstall\OpenSSL\OpenSSL-Win64\lib\libcrypto.lib;D:\myinstall\protobuf\protobuf64\lib\libprotobufd.lib;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Gui.lib;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Core.lib;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\qtmain.lib;D:\myinstall\protobuf\protobuf64\lib\libprotobuf-lited.lib;D:\myinstall\OpenSSL\OpenSSL-Win64\lib\libcrypto.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/myinstall/VMShare/FileClient/build/Release/FileClient.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/myinstall/VMShare/FileClient/build/bin/Release/FileClient.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\myinstall\VMShare\FileClient\build;D:\myinstall\VMShare\FileClient;D:\myinstall\VMShare\FileClient\build\FileClient_autogen\include_MinSizeRel;D:\myinstall\VMShare\FileClient\src;D:\myinstall\VMShare\FileClient\shared;D:\myinstall\protobuf\protobuf64\include;D:\myinstall\VMShare\FileClient\protos;D:\myinstall\OpenSSL\OpenSSL-Win64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtNetwork;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_UNICODE;UNICODE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;NOMINMAX;PROTOBUF_USE_DLLS;GOOGLE_PROTOBUF_CMAKE_BUILD;_HAS_AUTO_PTR_ETC=1;QT_CORE_LIB;QT_NO_DEBUG;QT_GUI_LIB;QT_WIDGETS_LIB;QT_NETWORK_LIB;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_UNICODE;UNICODE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;NOMINMAX;PROTOBUF_USE_DLLS;GOOGLE_PROTOBUF_CMAKE_BUILD;_HAS_AUTO_PTR_ETC=1;QT_CORE_LIB;QT_NO_DEBUG;QT_GUI_LIB;QT_WIDGETS_LIB;QT_NETWORK_LIB;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\myinstall\VMShare\FileClient\build;D:\myinstall\VMShare\FileClient;D:\myinstall\VMShare\FileClient\build\FileClient_autogen\include_MinSizeRel;D:\myinstall\VMShare\FileClient\src;D:\myinstall\VMShare\FileClient\shared;D:\myinstall\protobuf\protobuf64\include;D:\myinstall\VMShare\FileClient\protos;D:\myinstall\OpenSSL\OpenSSL-Win64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtNetwork;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\myinstall\VMShare\FileClient\build;D:\myinstall\VMShare\FileClient;D:\myinstall\VMShare\FileClient\build\FileClient_autogen\include_MinSizeRel;D:\myinstall\VMShare\FileClient\src;D:\myinstall\VMShare\FileClient\shared;D:\myinstall\protobuf\protobuf64\include;D:\myinstall\VMShare\FileClient\protos;D:\myinstall\OpenSSL\OpenSSL-Win64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtNetwork;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PreBuildEvent>
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message>Automatic MOC and UIC for target FileClient</Message>
+      <Command>setlocal
+cd D:\myinstall\VMShare\FileClient\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autogen D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient_autogen.dir/AutogenInfo.json MinSizeRel
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Message>					</Message>
+      <Command>setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64/bin/Qt5Core.dll D:/myinstall/VMShare/FileClient/build/bin/MinSizeRel
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64/bin/Qt5Gui.dll D:/myinstall/VMShare/FileClient/build/bin/MinSizeRel
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64/bin/Qt5Widgets.dll D:/myinstall/VMShare/FileClient/build/bin/MinSizeRel
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64/bin/Qt5Network.dll D:/myinstall/VMShare/FileClient/build/bin/MinSizeRel
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/protobuf/protobuf64/lib/libprotobufd.dll D:/myinstall/VMShare/FileClient/build/bin/MinSizeRel
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/OpenSSL/OpenSSL-Win64/bin/libcrypto-1_1-x64.dll D:/myinstall/VMShare/FileClient/build/bin/MinSizeRel
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Widgets.lib;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Network.lib;D:\myinstall\protobuf\protobuf64\lib\libprotobufd.lib;D:\myinstall\protobuf\protobuf64\lib\libprotobuf-lited.lib;D:\myinstall\OpenSSL\OpenSSL-Win64\lib\libcrypto.lib;D:\myinstall\protobuf\protobuf64\lib\libprotobufd.lib;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Gui.lib;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Core.lib;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\qtmain.lib;D:\myinstall\protobuf\protobuf64\lib\libprotobuf-lited.lib;D:\myinstall\OpenSSL\OpenSSL-Win64\lib\libcrypto.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/myinstall/VMShare/FileClient/build/MinSizeRel/FileClient.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/myinstall/VMShare/FileClient/build/bin/MinSizeRel/FileClient.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\myinstall\VMShare\FileClient\build;D:\myinstall\VMShare\FileClient;D:\myinstall\VMShare\FileClient\build\FileClient_autogen\include_RelWithDebInfo;D:\myinstall\VMShare\FileClient\src;D:\myinstall\VMShare\FileClient\shared;D:\myinstall\protobuf\protobuf64\include;D:\myinstall\VMShare\FileClient\protos;D:\myinstall\OpenSSL\OpenSSL-Win64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtNetwork;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_UNICODE;UNICODE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;NOMINMAX;PROTOBUF_USE_DLLS;GOOGLE_PROTOBUF_CMAKE_BUILD;_HAS_AUTO_PTR_ETC=1;QT_CORE_LIB;QT_NO_DEBUG;QT_GUI_LIB;QT_WIDGETS_LIB;QT_NETWORK_LIB;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_UNICODE;UNICODE;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;WIN32_LEAN_AND_MEAN;NOMINMAX;PROTOBUF_USE_DLLS;GOOGLE_PROTOBUF_CMAKE_BUILD;_HAS_AUTO_PTR_ETC=1;QT_CORE_LIB;QT_NO_DEBUG;QT_GUI_LIB;QT_WIDGETS_LIB;QT_NETWORK_LIB;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\myinstall\VMShare\FileClient\build;D:\myinstall\VMShare\FileClient;D:\myinstall\VMShare\FileClient\build\FileClient_autogen\include_RelWithDebInfo;D:\myinstall\VMShare\FileClient\src;D:\myinstall\VMShare\FileClient\shared;D:\myinstall\protobuf\protobuf64\include;D:\myinstall\VMShare\FileClient\protos;D:\myinstall\OpenSSL\OpenSSL-Win64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtNetwork;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\myinstall\VMShare\FileClient\build;D:\myinstall\VMShare\FileClient;D:\myinstall\VMShare\FileClient\build\FileClient_autogen\include_RelWithDebInfo;D:\myinstall\VMShare\FileClient\src;D:\myinstall\VMShare\FileClient\shared;D:\myinstall\protobuf\protobuf64\include;D:\myinstall\VMShare\FileClient\protos;D:\myinstall\OpenSSL\OpenSSL-Win64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtCore;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\.\mkspecs\win32-msvc;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtGui;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtANGLE;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtWidgets;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\include\QtNetwork;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <PreBuildEvent>
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message>Automatic MOC and UIC for target FileClient</Message>
+      <Command>setlocal
+cd D:\myinstall\VMShare\FileClient\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autogen D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient_autogen.dir/AutogenInfo.json RelWithDebInfo
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Message>					</Message>
+      <Command>setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64/bin/Qt5Core.dll D:/myinstall/VMShare/FileClient/build/bin/RelWithDebInfo
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64/bin/Qt5Gui.dll D:/myinstall/VMShare/FileClient/build/bin/RelWithDebInfo
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64/bin/Qt5Widgets.dll D:/myinstall/VMShare/FileClient/build/bin/RelWithDebInfo
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64/bin/Qt5Network.dll D:/myinstall/VMShare/FileClient/build/bin/RelWithDebInfo
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/protobuf/protobuf64/lib/libprotobufd.dll D:/myinstall/VMShare/FileClient/build/bin/RelWithDebInfo
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E copy_if_different D:/myinstall/OpenSSL/OpenSSL-Win64/bin/libcrypto-1_1-x64.dll D:/myinstall/VMShare/FileClient/build/bin/RelWithDebInfo
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Widgets.lib;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Network.lib;D:\myinstall\protobuf\protobuf64\lib\libprotobufd.lib;D:\myinstall\protobuf\protobuf64\lib\libprotobuf-lited.lib;D:\myinstall\OpenSSL\OpenSSL-Win64\lib\libcrypto.lib;D:\myinstall\protobuf\protobuf64\lib\libprotobufd.lib;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Gui.lib;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\Qt5Core.lib;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\qtmain.lib;D:\myinstall\protobuf\protobuf64\lib\libprotobuf-lited.lib;D:\myinstall\OpenSSL\OpenSSL-Win64\lib\libcrypto.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/myinstall/VMShare/FileClient/build/RelWithDebInfo/FileClient.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/myinstall/VMShare/FileClient/build/bin/RelWithDebInfo/FileClient.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\myinstall\VMShare\FileClient\build\CMakeFiles\bc3818d285e126e3d64714be18c6ede4\qrc_icons.cpp.rule">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Automatic RCC for resources/icons.qrc</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd D:\myinstall\VMShare\FileClient\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autorcc D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient_autogen.dir/AutoRcc_icons_3YJK5W5UP7_Info.json Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\myinstall\VMShare\FileClient\resources\icons.qrc;D:\myinstall\VMShare\FileClient\build\CMakeFiles\FileClient_autogen.dir\AutoRcc_icons_3YJK5W5UP7_Info.json;D:\myinstall\VMShare\FileClient\resources\icons\download.png;D:\myinstall\VMShare\FileClient\resources\icons\down-arrow.png;D:\myinstall\VMShare\FileClient\resources\icons\down-arrow-white.png;D:\myinstall\VMShare\FileClient\resources\icons\upload.png;D:\myinstall\VMShare\FileClient\resources\icons\help.png;D:\myinstall\VMShare\FileClient\resources\icons\file.png;D:\myinstall\VMShare\FileClient\resources\icons\history.png;D:\myinstall\VMShare\FileClient\resources\icons\disconnect.png;D:\myinstall\VMShare\FileClient\resources\icons\task.png;D:\myinstall\VMShare\FileClient\resources\icons\pin.png;D:\myinstall\VMShare\FileClient\resources\icons\refresh.png;D:\myinstall\VMShare\FileClient\resources\icons\connect.png;D:\myinstall\VMShare\FileClient\resources\icons\settings.png;D:\myinstall\VMShare\FileClient\resources\icons\folder.png;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\bin\rcc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\myinstall\VMShare\FileClient\build\FileClient_autogen\3YJK5W5UP7\qrc_icons.cpp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Automatic RCC for resources/icons.qrc</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+cd D:\myinstall\VMShare\FileClient\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autorcc D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient_autogen.dir/AutoRcc_icons_3YJK5W5UP7_Info.json Release
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\myinstall\VMShare\FileClient\resources\icons.qrc;D:\myinstall\VMShare\FileClient\build\CMakeFiles\FileClient_autogen.dir\AutoRcc_icons_3YJK5W5UP7_Info.json;D:\myinstall\VMShare\FileClient\resources\icons\download.png;D:\myinstall\VMShare\FileClient\resources\icons\down-arrow.png;D:\myinstall\VMShare\FileClient\resources\icons\down-arrow-white.png;D:\myinstall\VMShare\FileClient\resources\icons\upload.png;D:\myinstall\VMShare\FileClient\resources\icons\help.png;D:\myinstall\VMShare\FileClient\resources\icons\file.png;D:\myinstall\VMShare\FileClient\resources\icons\history.png;D:\myinstall\VMShare\FileClient\resources\icons\disconnect.png;D:\myinstall\VMShare\FileClient\resources\icons\task.png;D:\myinstall\VMShare\FileClient\resources\icons\pin.png;D:\myinstall\VMShare\FileClient\resources\icons\refresh.png;D:\myinstall\VMShare\FileClient\resources\icons\connect.png;D:\myinstall\VMShare\FileClient\resources\icons\settings.png;D:\myinstall\VMShare\FileClient\resources\icons\folder.png;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\bin\rcc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\myinstall\VMShare\FileClient\build\FileClient_autogen\3YJK5W5UP7\qrc_icons.cpp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Automatic RCC for resources/icons.qrc</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+cd D:\myinstall\VMShare\FileClient\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autorcc D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient_autogen.dir/AutoRcc_icons_3YJK5W5UP7_Info.json MinSizeRel
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\myinstall\VMShare\FileClient\resources\icons.qrc;D:\myinstall\VMShare\FileClient\build\CMakeFiles\FileClient_autogen.dir\AutoRcc_icons_3YJK5W5UP7_Info.json;D:\myinstall\VMShare\FileClient\resources\icons\download.png;D:\myinstall\VMShare\FileClient\resources\icons\down-arrow.png;D:\myinstall\VMShare\FileClient\resources\icons\down-arrow-white.png;D:\myinstall\VMShare\FileClient\resources\icons\upload.png;D:\myinstall\VMShare\FileClient\resources\icons\help.png;D:\myinstall\VMShare\FileClient\resources\icons\file.png;D:\myinstall\VMShare\FileClient\resources\icons\history.png;D:\myinstall\VMShare\FileClient\resources\icons\disconnect.png;D:\myinstall\VMShare\FileClient\resources\icons\task.png;D:\myinstall\VMShare\FileClient\resources\icons\pin.png;D:\myinstall\VMShare\FileClient\resources\icons\refresh.png;D:\myinstall\VMShare\FileClient\resources\icons\connect.png;D:\myinstall\VMShare\FileClient\resources\icons\settings.png;D:\myinstall\VMShare\FileClient\resources\icons\folder.png;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\bin\rcc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\myinstall\VMShare\FileClient\build\FileClient_autogen\3YJK5W5UP7\qrc_icons.cpp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Automatic RCC for resources/icons.qrc</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+cd D:\myinstall\VMShare\FileClient\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autorcc D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient_autogen.dir/AutoRcc_icons_3YJK5W5UP7_Info.json RelWithDebInfo
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\myinstall\VMShare\FileClient\resources\icons.qrc;D:\myinstall\VMShare\FileClient\build\CMakeFiles\FileClient_autogen.dir\AutoRcc_icons_3YJK5W5UP7_Info.json;D:\myinstall\VMShare\FileClient\resources\icons\download.png;D:\myinstall\VMShare\FileClient\resources\icons\down-arrow.png;D:\myinstall\VMShare\FileClient\resources\icons\down-arrow-white.png;D:\myinstall\VMShare\FileClient\resources\icons\upload.png;D:\myinstall\VMShare\FileClient\resources\icons\help.png;D:\myinstall\VMShare\FileClient\resources\icons\file.png;D:\myinstall\VMShare\FileClient\resources\icons\history.png;D:\myinstall\VMShare\FileClient\resources\icons\disconnect.png;D:\myinstall\VMShare\FileClient\resources\icons\task.png;D:\myinstall\VMShare\FileClient\resources\icons\pin.png;D:\myinstall\VMShare\FileClient\resources\icons\refresh.png;D:\myinstall\VMShare\FileClient\resources\icons\connect.png;D:\myinstall\VMShare\FileClient\resources\icons\settings.png;D:\myinstall\VMShare\FileClient\resources\icons\folder.png;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\bin\rcc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\myinstall\VMShare\FileClient\build\FileClient_autogen\3YJK5W5UP7\qrc_icons.cpp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\myinstall\VMShare\FileClient\build\CMakeFiles\bc3818d285e126e3d64714be18c6ede4\qrc_help.cpp.rule">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Automatic RCC for resources/help.qrc</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd D:\myinstall\VMShare\FileClient\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autorcc D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient_autogen.dir/AutoRcc_help_3YJK5W5UP7_Info.json Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\myinstall\VMShare\FileClient\resources\help.qrc;D:\myinstall\VMShare\FileClient\build\CMakeFiles\FileClient_autogen.dir\AutoRcc_help_3YJK5W5UP7_Info.json;D:\myinstall\VMShare\FileClient\resources\transfer.html;D:\myinstall\VMShare\FileClient\resources\config.html;D:\myinstall\VMShare\FileClient\resources\overview.html;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\bin\rcc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\myinstall\VMShare\FileClient\build\FileClient_autogen\3YJK5W5UP7\qrc_help.cpp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Automatic RCC for resources/help.qrc</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+cd D:\myinstall\VMShare\FileClient\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autorcc D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient_autogen.dir/AutoRcc_help_3YJK5W5UP7_Info.json Release
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\myinstall\VMShare\FileClient\resources\help.qrc;D:\myinstall\VMShare\FileClient\build\CMakeFiles\FileClient_autogen.dir\AutoRcc_help_3YJK5W5UP7_Info.json;D:\myinstall\VMShare\FileClient\resources\transfer.html;D:\myinstall\VMShare\FileClient\resources\config.html;D:\myinstall\VMShare\FileClient\resources\overview.html;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\bin\rcc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\myinstall\VMShare\FileClient\build\FileClient_autogen\3YJK5W5UP7\qrc_help.cpp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Automatic RCC for resources/help.qrc</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+cd D:\myinstall\VMShare\FileClient\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autorcc D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient_autogen.dir/AutoRcc_help_3YJK5W5UP7_Info.json MinSizeRel
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\myinstall\VMShare\FileClient\resources\help.qrc;D:\myinstall\VMShare\FileClient\build\CMakeFiles\FileClient_autogen.dir\AutoRcc_help_3YJK5W5UP7_Info.json;D:\myinstall\VMShare\FileClient\resources\transfer.html;D:\myinstall\VMShare\FileClient\resources\config.html;D:\myinstall\VMShare\FileClient\resources\overview.html;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\bin\rcc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\myinstall\VMShare\FileClient\build\FileClient_autogen\3YJK5W5UP7\qrc_help.cpp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Automatic RCC for resources/help.qrc</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+cd D:\myinstall\VMShare\FileClient\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autorcc D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient_autogen.dir/AutoRcc_help_3YJK5W5UP7_Info.json RelWithDebInfo
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\myinstall\VMShare\FileClient\resources\help.qrc;D:\myinstall\VMShare\FileClient\build\CMakeFiles\FileClient_autogen.dir\AutoRcc_help_3YJK5W5UP7_Info.json;D:\myinstall\VMShare\FileClient\resources\transfer.html;D:\myinstall\VMShare\FileClient\resources\config.html;D:\myinstall\VMShare\FileClient\resources\overview.html;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\bin\rcc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\myinstall\VMShare\FileClient\build\FileClient_autogen\3YJK5W5UP7\qrc_help.cpp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\myinstall\VMShare\FileClient\build\CMakeFiles\bc3818d285e126e3d64714be18c6ede4\qrc_themes.cpp.rule">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Automatic RCC for resources/themes.qrc</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd D:\myinstall\VMShare\FileClient\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autorcc D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient_autogen.dir/AutoRcc_themes_3YJK5W5UP7_Info.json Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\myinstall\VMShare\FileClient\resources\themes.qrc;D:\myinstall\VMShare\FileClient\build\CMakeFiles\FileClient_autogen.dir\AutoRcc_themes_3YJK5W5UP7_Info.json;D:\myinstall\VMShare\FileClient\resources\themes\light.qss;D:\myinstall\VMShare\FileClient\resources\themes\dark.qss;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\bin\rcc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\myinstall\VMShare\FileClient\build\FileClient_autogen\3YJK5W5UP7\qrc_themes.cpp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Automatic RCC for resources/themes.qrc</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+cd D:\myinstall\VMShare\FileClient\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autorcc D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient_autogen.dir/AutoRcc_themes_3YJK5W5UP7_Info.json Release
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\myinstall\VMShare\FileClient\resources\themes.qrc;D:\myinstall\VMShare\FileClient\build\CMakeFiles\FileClient_autogen.dir\AutoRcc_themes_3YJK5W5UP7_Info.json;D:\myinstall\VMShare\FileClient\resources\themes\light.qss;D:\myinstall\VMShare\FileClient\resources\themes\dark.qss;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\bin\rcc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\myinstall\VMShare\FileClient\build\FileClient_autogen\3YJK5W5UP7\qrc_themes.cpp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Automatic RCC for resources/themes.qrc</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+cd D:\myinstall\VMShare\FileClient\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autorcc D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient_autogen.dir/AutoRcc_themes_3YJK5W5UP7_Info.json MinSizeRel
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\myinstall\VMShare\FileClient\resources\themes.qrc;D:\myinstall\VMShare\FileClient\build\CMakeFiles\FileClient_autogen.dir\AutoRcc_themes_3YJK5W5UP7_Info.json;D:\myinstall\VMShare\FileClient\resources\themes\light.qss;D:\myinstall\VMShare\FileClient\resources\themes\dark.qss;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\bin\rcc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\myinstall\VMShare\FileClient\build\FileClient_autogen\3YJK5W5UP7\qrc_themes.cpp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Automatic RCC for resources/themes.qrc</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+cd D:\myinstall\VMShare\FileClient\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autorcc D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient_autogen.dir/AutoRcc_themes_3YJK5W5UP7_Info.json RelWithDebInfo
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\myinstall\VMShare\FileClient\resources\themes.qrc;D:\myinstall\VMShare\FileClient\build\CMakeFiles\FileClient_autogen.dir\AutoRcc_themes_3YJK5W5UP7_Info.json;D:\myinstall\VMShare\FileClient\resources\themes\light.qss;D:\myinstall\VMShare\FileClient\resources\themes\dark.qss;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\bin\rcc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\myinstall\VMShare\FileClient\build\FileClient_autogen\3YJK5W5UP7\qrc_themes.cpp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\myinstall\VMShare\FileClient\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/myinstall/VMShare/FileClient/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -SD:/myinstall/VMShare/FileClient -BD:/myinstall/VMShare/FileClient/build --check-stamp-file D:/myinstall/VMShare/FileClient/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5\Qt5Config.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5\Qt5ConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5\Qt5ModuleLocation.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreConfig.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreConfigExtras.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreConfigExtrasMkspecDir.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreMacros.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5GuiConfig.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5GuiConfigExtras.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5GuiConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QGifPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QICNSPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QICOPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QJpegPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QMinimalIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QOffscreenIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QTgaPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QTiffPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QTuioTouchPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QVirtualKeyboardPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWbmpPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWebGLIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWebpPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWindowsDirect2DIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWindowsIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QXdgDesktopPortalThemePlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Network\Qt5NetworkConfig.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Network\Qt5NetworkConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Network\Qt5Network_QGenericEnginePlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5WidgetsConfig.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5WidgetsConfigExtras.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5WidgetsConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5WidgetsMacros.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5Widgets_QWindowsVistaStylePlugin.cmake;D:\myinstall\VMShare\FileClient\build\CMakeFiles\3.29.0\CMakeCXXCompiler.cmake;D:\myinstall\VMShare\FileClient\build\CMakeFiles\3.29.0\CMakeRCCompiler.cmake;D:\myinstall\VMShare\FileClient\build\CMakeFiles\3.29.0\CMakeSystem.cmake;D:\myinstall\VMShare\FileClient\resources\help.qrc;D:\myinstall\VMShare\FileClient\resources\icons.qrc;D:\myinstall\VMShare\FileClient\resources\themes.qrc;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCXXCompiler.cmake.in;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCXXCompilerABI.cpp;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCXXInformation.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCommonLanguageInclude.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCompilerIdDetection.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCXXCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCompileFeatures.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCompilerABI.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCompilerId.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineRCCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineSystem.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeFindBinUtils.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeGenericSystem.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeInitializeConfigs.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeLanguageInformation.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeParseArguments.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeParseImplicitIncludeInfo.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeParseImplicitLinkInfo.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeParseLibraryArchitecture.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeRCCompiler.cmake.in;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeRCInformation.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeSystem.cmake.in;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeSystemSpecificInformation.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeSystemSpecificInitialize.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeTestCXXCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeTestCompilerCommon.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeTestRCCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\ADSP-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\ARMCC-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\ARMClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\AppleClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Borland-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Clang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Cray-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\CrayClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\FujitsuClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\GHS-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\IAR-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\IBMClang-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Intel-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\IntelLLVM-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\LCC-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\MSVC-CXX.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\MSVC-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\MSVC.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\NVHPC-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\OrangeC-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\PGI-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\PathScale-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\SCO-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\TI-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\TIClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Tasking-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Watcom-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CompilerId\VS-10.vcxproj.in;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Internal\CMakeDetermineLinkerId.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Internal\FeatureTesting.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows-Determine-CXX.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows-Initialize.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows-MSVC-CXX.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows-MSVC.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\myinstall\VMShare\FileClient\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/myinstall/VMShare/FileClient/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -SD:/myinstall/VMShare/FileClient -BD:/myinstall/VMShare/FileClient/build --check-stamp-file D:/myinstall/VMShare/FileClient/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5\Qt5Config.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5\Qt5ConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5\Qt5ModuleLocation.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreConfig.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreConfigExtras.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreConfigExtrasMkspecDir.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreMacros.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5GuiConfig.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5GuiConfigExtras.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5GuiConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QGifPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QICNSPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QICOPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QJpegPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QMinimalIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QOffscreenIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QTgaPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QTiffPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QTuioTouchPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QVirtualKeyboardPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWbmpPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWebGLIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWebpPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWindowsDirect2DIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWindowsIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QXdgDesktopPortalThemePlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Network\Qt5NetworkConfig.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Network\Qt5NetworkConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Network\Qt5Network_QGenericEnginePlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5WidgetsConfig.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5WidgetsConfigExtras.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5WidgetsConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5WidgetsMacros.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5Widgets_QWindowsVistaStylePlugin.cmake;D:\myinstall\VMShare\FileClient\build\CMakeFiles\3.29.0\CMakeCXXCompiler.cmake;D:\myinstall\VMShare\FileClient\build\CMakeFiles\3.29.0\CMakeRCCompiler.cmake;D:\myinstall\VMShare\FileClient\build\CMakeFiles\3.29.0\CMakeSystem.cmake;D:\myinstall\VMShare\FileClient\resources\help.qrc;D:\myinstall\VMShare\FileClient\resources\icons.qrc;D:\myinstall\VMShare\FileClient\resources\themes.qrc;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCXXCompiler.cmake.in;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCXXCompilerABI.cpp;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCXXInformation.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCommonLanguageInclude.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCompilerIdDetection.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCXXCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCompileFeatures.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCompilerABI.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCompilerId.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineRCCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineSystem.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeFindBinUtils.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeGenericSystem.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeInitializeConfigs.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeLanguageInformation.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeParseArguments.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeParseImplicitIncludeInfo.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeParseImplicitLinkInfo.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeParseLibraryArchitecture.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeRCCompiler.cmake.in;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeRCInformation.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeSystem.cmake.in;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeSystemSpecificInformation.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeSystemSpecificInitialize.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeTestCXXCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeTestCompilerCommon.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeTestRCCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\ADSP-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\ARMCC-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\ARMClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\AppleClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Borland-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Clang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Cray-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\CrayClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\FujitsuClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\GHS-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\IAR-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\IBMClang-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Intel-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\IntelLLVM-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\LCC-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\MSVC-CXX.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\MSVC-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\MSVC.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\NVHPC-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\OrangeC-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\PGI-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\PathScale-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\SCO-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\TI-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\TIClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Tasking-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Watcom-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CompilerId\VS-10.vcxproj.in;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Internal\CMakeDetermineLinkerId.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Internal\FeatureTesting.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows-Determine-CXX.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows-Initialize.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows-MSVC-CXX.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows-MSVC.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\myinstall\VMShare\FileClient\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/myinstall/VMShare/FileClient/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -SD:/myinstall/VMShare/FileClient -BD:/myinstall/VMShare/FileClient/build --check-stamp-file D:/myinstall/VMShare/FileClient/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5\Qt5Config.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5\Qt5ConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5\Qt5ModuleLocation.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreConfig.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreConfigExtras.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreConfigExtrasMkspecDir.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreMacros.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5GuiConfig.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5GuiConfigExtras.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5GuiConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QGifPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QICNSPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QICOPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QJpegPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QMinimalIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QOffscreenIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QTgaPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QTiffPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QTuioTouchPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QVirtualKeyboardPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWbmpPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWebGLIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWebpPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWindowsDirect2DIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWindowsIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QXdgDesktopPortalThemePlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Network\Qt5NetworkConfig.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Network\Qt5NetworkConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Network\Qt5Network_QGenericEnginePlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5WidgetsConfig.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5WidgetsConfigExtras.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5WidgetsConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5WidgetsMacros.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5Widgets_QWindowsVistaStylePlugin.cmake;D:\myinstall\VMShare\FileClient\build\CMakeFiles\3.29.0\CMakeCXXCompiler.cmake;D:\myinstall\VMShare\FileClient\build\CMakeFiles\3.29.0\CMakeRCCompiler.cmake;D:\myinstall\VMShare\FileClient\build\CMakeFiles\3.29.0\CMakeSystem.cmake;D:\myinstall\VMShare\FileClient\resources\help.qrc;D:\myinstall\VMShare\FileClient\resources\icons.qrc;D:\myinstall\VMShare\FileClient\resources\themes.qrc;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCXXCompiler.cmake.in;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCXXCompilerABI.cpp;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCXXInformation.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCommonLanguageInclude.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCompilerIdDetection.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCXXCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCompileFeatures.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCompilerABI.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCompilerId.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineRCCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineSystem.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeFindBinUtils.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeGenericSystem.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeInitializeConfigs.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeLanguageInformation.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeParseArguments.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeParseImplicitIncludeInfo.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeParseImplicitLinkInfo.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeParseLibraryArchitecture.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeRCCompiler.cmake.in;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeRCInformation.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeSystem.cmake.in;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeSystemSpecificInformation.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeSystemSpecificInitialize.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeTestCXXCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeTestCompilerCommon.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeTestRCCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\ADSP-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\ARMCC-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\ARMClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\AppleClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Borland-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Clang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Cray-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\CrayClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\FujitsuClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\GHS-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\IAR-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\IBMClang-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Intel-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\IntelLLVM-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\LCC-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\MSVC-CXX.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\MSVC-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\MSVC.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\NVHPC-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\OrangeC-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\PGI-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\PathScale-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\SCO-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\TI-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\TIClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Tasking-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Watcom-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CompilerId\VS-10.vcxproj.in;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Internal\CMakeDetermineLinkerId.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Internal\FeatureTesting.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows-Determine-CXX.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows-Initialize.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows-MSVC-CXX.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows-MSVC.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\myinstall\VMShare\FileClient\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/myinstall/VMShare/FileClient/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -SD:/myinstall/VMShare/FileClient -BD:/myinstall/VMShare/FileClient/build --check-stamp-file D:/myinstall/VMShare/FileClient/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5\Qt5Config.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5\Qt5ConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5\Qt5ModuleLocation.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreConfig.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreConfigExtras.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreConfigExtrasMkspecDir.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Core\Qt5CoreMacros.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5GuiConfig.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5GuiConfigExtras.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5GuiConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QGifPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QICNSPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QICOPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QJpegPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QMinimalIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QOffscreenIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QTgaPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QTiffPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QTuioTouchPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QVirtualKeyboardPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWbmpPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWebGLIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWebpPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWindowsDirect2DIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QWindowsIntegrationPlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Gui\Qt5Gui_QXdgDesktopPortalThemePlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Network\Qt5NetworkConfig.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Network\Qt5NetworkConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Network\Qt5Network_QGenericEnginePlugin.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5WidgetsConfig.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5WidgetsConfigExtras.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5WidgetsConfigVersion.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5WidgetsMacros.cmake;D:\myinstall\Qt5.12.12\5.12.12\msvc2017_64\lib\cmake\Qt5Widgets\Qt5Widgets_QWindowsVistaStylePlugin.cmake;D:\myinstall\VMShare\FileClient\build\CMakeFiles\3.29.0\CMakeCXXCompiler.cmake;D:\myinstall\VMShare\FileClient\build\CMakeFiles\3.29.0\CMakeRCCompiler.cmake;D:\myinstall\VMShare\FileClient\build\CMakeFiles\3.29.0\CMakeSystem.cmake;D:\myinstall\VMShare\FileClient\resources\help.qrc;D:\myinstall\VMShare\FileClient\resources\icons.qrc;D:\myinstall\VMShare\FileClient\resources\themes.qrc;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCXXCompiler.cmake.in;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCXXCompilerABI.cpp;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCXXInformation.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCommonLanguageInclude.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeCompilerIdDetection.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCXXCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCompileFeatures.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCompilerABI.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineCompilerId.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineRCCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeDetermineSystem.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeFindBinUtils.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeGenericSystem.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeInitializeConfigs.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeLanguageInformation.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeParseArguments.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeParseImplicitIncludeInfo.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeParseImplicitLinkInfo.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeParseLibraryArchitecture.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeRCCompiler.cmake.in;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeRCInformation.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeSystem.cmake.in;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeSystemSpecificInformation.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeSystemSpecificInitialize.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeTestCXXCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeTestCompilerCommon.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CMakeTestRCCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\ADSP-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\ARMCC-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\ARMClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\AppleClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Borland-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Clang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Cray-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\CrayClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\FujitsuClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\GHS-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\IAR-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\IBMClang-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Intel-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\IntelLLVM-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\LCC-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\MSVC-CXX.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\MSVC-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\MSVC.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\NVHPC-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\OrangeC-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\PGI-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\PathScale-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\SCO-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\TI-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\TIClang-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Tasking-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\Watcom-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\CompilerId\VS-10.vcxproj.in;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Internal\CMakeDetermineLinkerId.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Internal\FeatureTesting.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows-Determine-CXX.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows-Initialize.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows-MSVC-CXX.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows-MSVC.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\Windows.cmake;D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\share\cmake-3.29\Modules\Platform\WindowsPaths.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\myinstall\VMShare\FileClient\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\build\FileClient_autogen\mocs_compilation_Debug.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\protos\transfer.pb.cc" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\protos\transfer.pb.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\shared\Logger.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\shared\Logger.h" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\shared\TransferDefs.h" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\shared\TransferProtocol.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\AddressBar.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\AddressBar.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\AnimationHelper.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\AnimationHelper.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\AppConfig.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\AppConfig.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\ConfigDialog.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\ConfigDialog.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\FileClient.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\FileClient.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\FileListView.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\FileListView.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\HelpDialog.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\HelpDialog.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\LoadingSpinner.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\LoadingSpinner.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\LogWidget.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\LogWidget.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\Net_Tool.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\Net_Tool.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\NotificationWidget.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\NotificationWidget.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\ProgressBarAnimation.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\ProgressBarAnimation.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\ProgressWidget.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\ProgressWidget.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\TaskManagerDialog.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\TaskManagerDialog.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\ThemeManager.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\ThemeManager.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\TransferHistory.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\TransferHistory.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\TransferHistoryDialog.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\TransferHistoryDialog.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\TransferProgressWidget.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\TransferProgressWidget.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\TransferQueue.cpp" />
+    <ClInclude Include="D:\myinstall\VMShare\FileClient\src\TransferQueue.h" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\src\main.cpp" />
+    <None Include="D:\myinstall\VMShare\FileClient\resources\icons.qrc">
+    </None>
+    <None Include="D:\myinstall\VMShare\FileClient\resources\help.qrc">
+    </None>
+    <None Include="D:\myinstall\VMShare\FileClient\resources\themes.qrc">
+    </None>
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\build\FileClient_autogen\3YJK5W5UP7\qrc_icons.cpp" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\build\FileClient_autogen\3YJK5W5UP7\qrc_help.cpp" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\build\FileClient_autogen\3YJK5W5UP7\qrc_themes.cpp" />
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\build\FileClient_autogen\mocs_compilation_Release.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\build\FileClient_autogen\mocs_compilation_MinSizeRel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="D:\myinstall\VMShare\FileClient\build\FileClient_autogen\mocs_compilation_RelWithDebInfo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\myinstall\VMShare\FileClient\build\ZERO_CHECK.vcxproj">
+      <Project>{9E92898C-2501-3E95-B904-545A7D9AB4C1}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

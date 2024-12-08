@@ -1,0 +1,3 @@
+D:/myinstall/VMShare/FileClient/build/CMakeFiles/FileClient.dir
+D:/myinstall/VMShare/FileClient/build/CMakeFiles/ALL_BUILD.dir
+D:/myinstall/VMShare/FileClient/build/CMakeFiles/ZERO_CHECK.dir

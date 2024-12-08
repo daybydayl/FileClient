@@ -1,0 +1,42 @@
+^D:\MYINSTALL\VMSHARE\FILECLIENT_VSCODE\BUILD\CMAKEFILES\1A7B9FAB24E246F964614DDB8843673E\QRC_ICONS.CPP.RULE
+setlocal
+cd D:\myinstall\VMShare\FileClient_vscode\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autorcc D:/myinstall/VMShare/FileClient_vscode/build/CMakeFiles/FileClient_autogen.dir/AutoRcc_icons_3YJK5W5UP7_Info.json Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\MYINSTALL\VMSHARE\FILECLIENT_VSCODE\BUILD\CMAKEFILES\1A7B9FAB24E246F964614DDB8843673E\QRC_HELP.CPP.RULE
+setlocal
+cd D:\myinstall\VMShare\FileClient_vscode\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autorcc D:/myinstall/VMShare/FileClient_vscode/build/CMakeFiles/FileClient_autogen.dir/AutoRcc_help_3YJK5W5UP7_Info.json Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^D:\MYINSTALL\VMSHARE\FILECLIENT_VSCODE\BUILD\CMAKEFILES\1A7B9FAB24E246F964614DDB8843673E\QRC_THEMES.CPP.RULE
+setlocal
+cd D:\myinstall\VMShare\FileClient_vscode\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -E cmake_autorcc D:/myinstall/VMShare/FileClient_vscode/build/CMakeFiles/FileClient_autogen.dir/AutoRcc_themes_3YJK5W5UP7_Info.json Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

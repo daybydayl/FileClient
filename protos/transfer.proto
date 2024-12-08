@@ -1,0 +1,170 @@
+syntax = "proto3";
+
+package transfer;
+
+// 消息类型枚举
+enum MessageType {
+    UNKNOWN = 0;           // 未知类型
+    DIRECTORY = 1;         // 目录操作
+    UPLOAD = 2;           // 上传操作
+    DOWNLOAD = 3;         // 下载操作
+    TRANSFER_CONTROL = 4;  // 传输控制
+    TRANSFER_PROGRESS = 5; // 传输进度
+}
+
+// 请求报文头
+message RequestHeader {
+    string session_id = 1;     // 会话ID
+    MessageType type = 2;      // 请求类型
+    uint64 timestamp = 3;      // 时间戳
+    uint64 sequence = 4;       // 建议添加序列号,用于请求追踪和响应匹配
+}
+
+// 响应报文头
+message ResponseHeader {
+    string session_id = 1;     // 会话ID
+    MessageType type = 2;      // 响应类型
+    uint64 timestamp = 3;      // 时间戳
+    bool success = 4;          // 是否成功
+    string error_code = 5;     // 错误码
+    string error_message = 6;  // 建议添加错误信息
+    uint64 sequence = 7;       // 对应请求的序列号
+}
+
+// 目录请求
+message DirectoryRequest {
+    RequestHeader header = 1;
+    string current_path = 2;   // 当前目录
+    string dir_name = 3;       // 目录名
+    bool is_parent = 4;        // 是否请求父目录
+}
+
+// 目录响应
+message DirectoryResponse {
+    ResponseHeader header = 1;
+    message FileInfo {
+        string name = 1;       // 文件名
+        bool is_directory = 2; // 是否是目录
+        uint64 size = 3;      // 文件大小
+        string modify_time = 4;// 修改时间
+        string permissions = 5;// 权限
+        string task_id = 6;      // 任务ID,用于标识整个传输过程
+        TransferStatus status = 7;// 传输状态
+    }
+    string path = 2;          // 目录路径
+    repeated FileInfo files = 3;// 文件列表
+}
+
+// 文件上传请求
+message UploadRequest {
+    RequestHeader header = 1;
+    message FileInfo {
+        string file_name = 1;    // 文件名
+        string target_path = 2;  // 目标路径
+        uint64 file_size = 3;    // 文件大小
+        string md5 = 4;          // 文件MD5
+        bool need_chunk = 5;     // 是否分片
+        uint32 chunk_size = 6;   // 分片大小
+        uint32 chunk_sequence = 7;// 分片序号
+        bytes data = 8;          // 数据
+        uint32 checksum = 9;     // 校验和
+        string task_id = 10;      // 任务ID,用于标识整个传输过程
+        TransferStatus status = 11;// 传输状态
+        uint64 offset = 12;        // 断点续传的起始位置
+        string upload_id = 13;     // 上传会话ID(用于断点续传)
+    }
+    repeated FileInfo files = 2; // 可以同时上传多个文件
+}
+
+// 文件上传响应
+message UploadResponse {
+    ResponseHeader header = 1;
+    message FileResult {
+        string file_name = 1;    // 文件名
+        string target_path = 2;  // 目标路径
+        bool success = 3;        // 是否成功
+        bool need_chunk = 4;     // 是否分片
+        int32 next_sequence = 5; // 下一分片序号(-1表示完成)
+        string error_message = 6; // 错误信息
+    }
+    repeated FileResult results = 2; // 对应每个上传文件的结果
+}
+
+// 文件下载请求
+message DownloadRequest {
+    RequestHeader header = 1;
+    message FileInfo {
+        string file_name = 1;    // 文件名
+        string target_path = 2;  // 目标路径
+        uint32 chunk_size = 3;   // 期望分片大小
+        uint64 offset = 4;         // 断点续传的起始位置
+        string download_id = 5;    // 下载会话ID
+    }
+    repeated FileInfo files = 2; // 可以同时下载多个文件
+}
+
+// 文件下载响应
+message DownloadResponse {
+    ResponseHeader header = 1;
+    message FileResult {
+        string file_name = 1;    // 文件名
+        string target_path = 2;  // 目标路径
+        bool exists = 3;         // 文件是否存在
+        uint64 file_size = 4;    // 文件大小
+        string md5 = 5;          // 文件MD5
+        bool need_chunk = 6;     // 是否分片
+        uint32 chunk_size = 7;   // 分片大小
+        uint32 chunk_sequence = 8;// 分片序号
+        bytes data = 9;          // 分片数据
+        uint32 checksum = 10;    // 分片校验和
+        bool is_last = 11;       // 是否为最后一个分片
+        string error_message = 12;// 错误信息
+    }
+    repeated FileResult results = 2; // 对应每个下载文件的结果
+}
+
+// 传输状态枚举
+enum TransferStatus {
+    INIT = 0;        // 初始状态
+    TRANSFERRING = 1;// 传输中
+    PAUSED = 2;      // 已暂停
+    COMPLETED = 3;   // 已完成
+    FAILED = 4;      // 失败
+}
+
+// 传输控制请求
+message TransferControlRequest {
+    RequestHeader header = 1;
+    string task_id = 2;           // 任务ID
+    enum ControlType {
+        PAUSE = 0;    // 暂停
+        RESUME = 1;   // 恢复
+        CANCEL = 2;   // 取消
+    }
+    ControlType control_type = 3;  // 控制类型
+}
+
+// 传输控制响应
+message TransferControlResponse {
+    ResponseHeader header = 1;
+    string task_id = 2;           // 任务ID
+    bool success = 3;             // 是否成功
+    TransferStatus new_status = 4; // 新状态
+}
+
+// 传输进度查询请求
+message TransferProgressRequest {
+    RequestHeader header = 1;
+    string task_id = 2;           // 任务ID
+}
+
+// 传输进度查询响应
+message TransferProgressResponse {
+    ResponseHeader header = 1;
+    string task_id = 2;           // 任务ID
+    TransferStatus status = 3;     // 当前状态
+    uint64 transferred_size = 4;   // 已传输大小
+    uint64 total_size = 5;        // 总大小
+    uint32 speed = 6;             // 当前速度(bytes/s)
+    uint32 progress = 7;          // 进度(0-100)
+}
