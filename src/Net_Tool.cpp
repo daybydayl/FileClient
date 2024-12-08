@@ -73,6 +73,15 @@ bool Net_Tool::connectToServer(const std::string& serverIP, uint16_t port) {
         return false;
     }
 
+    //linux和window下非阻塞设置不一样
+// #ifdef _WIN32
+//     u_long iMode = 1;
+//     ioctlsocket(sock, FIONBIO, &iMode);
+// #else
+//     int flags = fcntl(sock, F_GETFL, 0);
+//     fcntl(sock, F_SETFL, flags | O_NONBLOCK);
+// #endif
+
     // 设置服务器地址
     sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET;
@@ -197,11 +206,44 @@ bool Net_Tool::sendMessage(const T& message, char type) {
 }
 
 template<typename T>
-bool Net_Tool::receiveMessage(T& message) {
+bool Net_Tool::receiveMessage(T& message, char type) {
     // 接收序列化的消息
     std::string serialized;
-    // 这里需要根据你的协议来确定如何接收消息
-    // ...
+    char buff[65535] = {0};
+    int ret=0;
+    int data_len=0;
+    int type_char=0;
+    bool res = true;
+
+    //先看下数据有多少，在接收
+    ret = peek_read(buff, sizeof(buff));
+    if(ret <= 0) {
+        return false;
+    }
+    //接收数据
+    res = receiveData(buff, ret);
+    if(!res) {
+        return false;
+    }
+    //解析底层收发头
+    memcpy((char*)&data_len,buff,sizeof(int));
+    memcpy((char*)&type_char,buff+sizeof(int),sizeof(char));
+    if(type_char != type) {
+        //类型不对，返回false
+        return false;
+    }
+    //把序列化部分数据拿到
+    serialized += std::string(buff+sizeof(int)+sizeof(char), ret-sizeof(int)-sizeof(char));
+
+    //现在是阻塞模式，查看不到数据的话也会阻塞中
+    // while((ret = peek_read(buff, sizeof(buff))) && ret > 0) {
+    //     //有可能没拿完，一般不会进入这个while
+    //     res = receiveData(buff, ret);
+    //     if(!res) {
+    //         return false;
+    //     }
+    //     serialized += std::string(buff, ret);//继续追加
+    // }
 
     // 反序列化消息
     if (!message.ParseFromString(serialized)) {
@@ -214,9 +256,32 @@ bool Net_Tool::receiveMessage(T& message) {
     return true;
 }
 
+int Net_Tool::peek_read(char *buf, int len) {
+#ifndef _WIN32
+    // 使用临时缓冲区进行MSG_PEEK
+    ret = recv(sock, peek_buf, sizeof(peek_buf), MSG_PEEK);
+    if(-1 == ret)
+    {
+        perror("readLine error -1");
+        return -1;
+    }
+    return ret;
+#else
+    int ret = recv(sock, buf, len, MSG_PEEK);
+    if (ret == SOCKET_ERROR) {
+            int errorCode = WSAGetLastError();
+            if (errorCode != WSAEINTR) {
+                printf("recv error: %d\n", errorCode);
+                return -1;
+            }
+    }
+    return ret;
+#endif
+}
+
 transfer::DirectoryResponse Net_Tool::sendDirectoryRequest(const transfer::DirectoryRequest& request) {
     transfer::DirectoryResponse response;
-    if (!sendMessage(request, DIRECTORY_TYPE) || !receiveMessage(response)) {
+    if (!sendMessage(request, DIRECTORY_TYPE) || !receiveMessage(response, DIRECTORY_TYPE)) {
         if (errorCallback) {
             errorCallback("Failed to send directory request");
         }
@@ -406,7 +471,7 @@ void Net_Tool::startUploadTask(const std::string& filePath, const std::string& t
 
         // 接收上传响应
         transfer::UploadResponse response;
-        if (!receiveMessage(response)) {
+        if (!receiveMessage(response, UPLOAD_TYPE)) {
             if (errorCallback) {
                 errorCallback("Failed to receive upload response");
             }
@@ -485,7 +550,7 @@ void Net_Tool::startDownloadTask(const std::string& fileName, const std::string&
 
         // 接收下载响应
         transfer::DownloadResponse response;
-        if (!receiveMessage(response)) {
+        if (!receiveMessage(response, DOWNLOAD_TYPE)) {
             if (errorCallback) {
                 errorCallback("Failed to receive download response");
             }

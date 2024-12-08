@@ -1,6 +1,6 @@
-^D:\MYINSTALL\VMSHARE\FILECLIENT_VSCODE\BUILD\CMAKEFILES\6DB3888D7737869BA9C39D9BBE2EC1DB\GENERATE.STAMP.RULE
+^D:\MYINSTALL\VMSHARE\FILECLIENT\BUILD\CMAKEFILES\507307D01D3334A5037F88E886B1D9B0\GENERATE.STAMP.RULE
 setlocal
-D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -SD:/myinstall/VMShare/FileClient_vscode -BD:/myinstall/VMShare/FileClient_vscode/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/myinstall/VMShare/FileClient_vscode/build/FileClient.sln
+D:\myinstall\VSCode\cmake-3.29.0-windows-x86_64\bin\cmake.exe -SD:/myinstall/VMShare/FileClient -BD:/myinstall/VMShare/FileClient/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/myinstall/VMShare/FileClient/build/FileClient.sln
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone

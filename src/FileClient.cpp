@@ -293,7 +293,6 @@ void FileClient::handleConnect()
     
     // 使用Net_Tool连接服务器
     if (m_netTool->connectToServer(serverIP.toStdString(), port)) {
-        m_logWidget->appendLog(tr("成功连接到服务器 %1:%2").arg(serverIP).arg(port));
         
         // 更新UI状态
         m_connectAction->setEnabled(false);
@@ -302,22 +301,18 @@ void FileClient::handleConnect()
         m_downloadAction->setEnabled(true);
 
         //发送目录请求报文
-        transfer::DirectoryRequest request = m_netTool->createDirectoryRequest("/", "/", false);
+        transfer::DirectoryRequest request = m_netTool->createDirectoryRequest("/", "", false);
         transfer::DirectoryResponse response = m_netTool->sendDirectoryRequest(request);
-        // qDebug() << "type:" << response.header().type();
-        // qDebug() << "success:" << response.header().success();
-        // qDebug() << "error_code:" << response.header().error_code().c_str();
-        // qDebug() << "error_message:" << response.header().error_message().c_str();
-        // qDebug() << "sequence:" << response.header().sequence();
-        // qDebug() << "timestamp:" << response.header().timestamp();
-        // qDebug() << "session_id:" << response.header().session_id().c_str();
-        // qDebug() << response.DebugString().c_str();
-
 
         // 设置错误回调
         m_netTool->setErrorCallback([this](const std::string& error) {
             m_logWidget->appendLog(QString::fromStdString(error), true);
         });
+
+        //这里服务端返回响应报文后应该把响应报文的数据更新到远程视图
+        
+        
+        m_logWidget->appendLog(tr("成功连接到服务器 %1:%2").arg(serverIP).arg(port));
     } else {
         m_logWidget->appendLog(tr("连接服务器失败"), true);
     }

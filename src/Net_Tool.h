@@ -122,7 +122,10 @@ public:
 
     // 接收protobuf消息
     template<typename T>
-    bool receiveMessage(T& message);
+    bool receiveMessage(T& message, char type);
+
+    //查看数据，返回本次查看的数据长度
+    int peek_read(char *buf, int len);
 
     // 传输任务结构
     struct TransferTask {
