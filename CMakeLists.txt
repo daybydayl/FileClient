@@ -40,6 +40,29 @@ set(SHARED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/shared")
 set(PROTOS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/protos")
 set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
 
+# 添加源文件
+set(SOURCES
+    src/main.cpp
+    src/FileClient.cpp
+    src/FileListView.cpp
+    src/AddressBar.cpp
+    src/LogWidget.cpp
+    src/ProgressWidget.cpp
+    src/Net_Tool.cpp
+    src/RemoteFileSystemModel.cpp
+)
+
+# 添加头文件
+set(HEADERS
+    src/FileClient.h
+    src/FileListView.h
+    src/AddressBar.h
+    src/LogWidget.h
+    src/ProgressWidget.h
+    src/Net_Tool.h
+    src/RemoteFileSystemModel.h
+)
+
 # 收集源文件
 file(GLOB_RECURSE CLIENT_SOURCES 
     "${SRC_DIR}/*.cpp"

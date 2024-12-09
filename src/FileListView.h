@@ -5,6 +5,7 @@
 #include <QVBoxLayout>
 #include <QTreeView>
 #include <QFileSystemModel>
+#include <QFileIconProvider>
 #include <QLabel>
 #include <QTabWidget>
 #include <QPushButton>
@@ -12,6 +13,7 @@
 #include <QSplitter>
 #include <QTreeWidget>
 #include <QTextEdit>
+#include "RemoteFileSystemModel.h"
 /**
  * @brief 中文文件系统模型类
  * 
@@ -37,8 +39,8 @@ public:
  * 负责:
  * 1. 显示本地或远程文件系统的树形视图
  * 2. 提供文件操作功能(复制、粘贴、删除等)
- * 3. 支持文件拖放操作
- * 4. 管理文件系统模型和过滤器
+ * 3. 支持文件���操作
+ * 4. 管理文系统模型和过滤器
  */
 class FileListView : public QWidget
 {
@@ -57,11 +59,20 @@ public:
     void addServerTab(const QString& serverAddress, const QString& rootPath);
     bool isEmpty() const { return m_tabWidget->count() == 0; }
     void show() { QWidget::show(); }
-    void hide() { QWidget::hide(); }
+    void hide() { if(m_tabWidget->count()==0) QWidget::hide(); }
+
+    void addFileEntry(const QString& name, const QString& path, bool isDir, 
+                     qint64 size, const QDateTime& modTime);
+    bool isVisible() const { return QWidget::isVisible(); }
+
+public slots:
+    void closeTab(int index);
+
+signals:
+    void remoteTabClosed();
 
 private slots:
     void addNewTab();
-    void closeTab(int index);
     void navigateUp();
     void updateAddButtonPosition();
 
@@ -97,11 +108,28 @@ class FileTabPage : public QWidget
     Q_OBJECT
     
 public:
-    explicit FileTabPage(QWidget* parent = nullptr);
+    explicit FileTabPage(QWidget* parent = nullptr, bool isRemote = false);
     void setRootPath(const QString& path);
     QString rootPath() const;
     QTreeView* treeView() const { return m_treeView; }
-    QFileSystemModel* model() const { return m_model; }
+    QAbstractItemModel* model() const { return m_isRemote ? static_cast<QAbstractItemModel*>(m_remoteModel) 
+                                                        : static_cast<QAbstractItemModel*>(m_model); }
+    bool isRemote() const { return m_isRemote; }
+    ChineseFileSystemModel* fileSystemModel() const { return m_model; }
+    
+    QString filePath(const QModelIndex& index) const {
+        if (!index.isValid()) return QString();
+        
+        if (m_isRemote) {
+            if (auto* model = qobject_cast<RemoteFileSystemModel*>(m_remoteModel)) {
+                const RemoteFileInfo& fileInfo = model->fileInfo(index);
+                return model->currentPath() + "/" + fileInfo.name;
+            }
+            return QString();
+        } else {
+            return m_model->filePath(index);
+        }
+    }
 
 private slots:
     void showContextMenu(const QPoint& pos);
@@ -121,6 +149,8 @@ private:
     QVBoxLayout* m_layout;
     QTreeView* m_treeView;
     ChineseFileSystemModel* m_model;
+    RemoteFileSystemModel* m_remoteModel;
+    bool m_isRemote;
 };
 
 #endif // FILELISTVIEW_H 

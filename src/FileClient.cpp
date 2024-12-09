@@ -33,7 +33,6 @@ FileClient::FileClient(QWidget *parent)
     , m_centralWidget(nullptr)
     , m_mainLayout(nullptr)
     , m_hSplitter(nullptr)
-    //, m_networkManager(NetworkManager::instance())
     , m_connectAction(nullptr)
     , m_disconnectAction(nullptr)
     , m_uploadAction(nullptr)
@@ -52,7 +51,6 @@ FileClient::FileClient(QWidget *parent)
     initMenuBar();
     initToolBar();
     initCentralWidget();
-    setupConnections();
     setupShortcuts();
     setupTheme();
 
@@ -245,7 +243,7 @@ void FileClient::initCentralWidget()
     // 创建远程文件视图但先不添加到分割器
     m_remoteView = new FileListView(tr("远程"), nullptr);
     
-    // 只添加本地视图到分割器
+    // 只添加本地视到分割器
     m_hSplitter->addWidget(m_localView);
     
     // 创建底部标签页
@@ -271,13 +269,11 @@ void FileClient::initCentralWidget()
     // 设置分割器的初始大小比例
     vSplitter->setStretchFactor(0, 7);  // 上部分占7
     vSplitter->setStretchFactor(1, 3);  // 下部分占3
-}
 
-void FileClient::setupConnections()
-{
-    
     // 连接地址栏的信号
     connect(m_addressBar->connectButton(), &QPushButton::clicked, this, &FileClient::handleConnect);
+    // 连接远程标签页关闭信号
+    connect(m_remoteView, &FileListView::remoteTabClosed, this, &FileClient::handleRemoteTabClosed);
 }
 
 void FileClient::handleNetworkError(const QString& error)
@@ -293,15 +289,19 @@ void FileClient::handleConnect()
     
     // 使用Net_Tool连接服务器
     if (m_netTool->connectToServer(serverIP.toStdString(), port)) {
-        
         // 更新UI状态
         m_connectAction->setEnabled(false);
         m_disconnectAction->setEnabled(true);
         m_uploadAction->setEnabled(true);
         m_downloadAction->setEnabled(true);
 
-        //发送目录请求报文
-        transfer::DirectoryRequest request = m_netTool->createDirectoryRequest("/", "", false);
+        // 发送目录请求报文
+        transfer::DirectoryRequest request;
+        request.mutable_header()->set_type(transfer::DIRECTORY);
+        request.set_current_path("/");
+        request.set_dir_name("");
+        request.set_is_parent(false);
+        
         transfer::DirectoryResponse response = m_netTool->sendDirectoryRequest(request);
 
         // 设置错误回调
@@ -309,8 +309,33 @@ void FileClient::handleConnect()
             m_logWidget->appendLog(QString::fromStdString(error), true);
         });
 
-        //这里服务端返回响应报文后应该把响应报文的数据更新到远程视图
-        
+        // 将远程视图添加到分割器中并显示
+        if (!m_remoteView->isVisible()) {
+            m_hSplitter->addWidget(m_remoteView);
+            m_hSplitter->setSizes({1, 1}); // 使用初始化列表,比例1:1即可
+            m_remoteView->show();
+        }
+
+        // 添加或更新服务器标签页
+        QString serverAddress = QString("%1:%2").arg(serverIP).arg(port);
+        m_remoteView->addServerTab(serverAddress, "/");
+
+        // 处理目录响应数据
+        if (response.header().success()) {  // 检查响应是否成功
+            // 遍历files数组
+            QString currentPath = QString::fromStdString(response.path());
+            for (const auto& file : response.files()) {
+                QString name = QString::fromStdString(file.name());
+                bool isDir = file.is_directory();
+                qint64 size = file.size();
+                QString modifyTime = QString::fromStdString(file.modify_time());
+                
+                // 使用modify_time字符串创建QDateTime
+                QDateTime modTime = QDateTime::fromString(modifyTime, Qt::ISODate);
+                
+                m_remoteView->addFileEntry(name, currentPath, isDir, size, modTime);
+            }
+        }
         
         m_logWidget->appendLog(tr("成功连接到服务器 %1:%2").arg(serverIP).arg(port));
     } else {
@@ -327,6 +352,10 @@ void FileClient::handleDisconnect()
     m_disconnectAction->setEnabled(false);
     m_uploadAction->setEnabled(false);
     m_downloadAction->setEnabled(false);
+    
+    // 清理远程视图
+    m_remoteView->clear();
+    m_remoteView->hide();
     
     m_logWidget->appendLog(tr("已断开服务器连接"));
 }
@@ -445,7 +474,7 @@ void FileClient::showAbout()
     QLabel* contentLabel = new QLabel(
         tr("<div style='text-align: center;'>"
            "<h2 style='margin: 20px 0; color: #2196F3;'>文件传输客户端</h2>"
-           "<p style='margin: 15px 0; font-size: 11pt; line-height: 1.5;'>版��� 1.0</p>"
+           "<p style='margin: 15px 0; font-size: 11pt; line-height: 1.5;'>版本 1.0</p>"
            "<p style='margin: 15px 0; font-size: 11pt; line-height: 1.5;'>基于Qt %1构建</p>"
            "<p style='margin: 15px 0; font-size: 11pt; line-height: 1.5;'>Copyright 2024</p>"
            "</div>")
@@ -514,4 +543,10 @@ void FileClient::toggleWindowOnTop()
                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
     
     m_onTopButton->setChecked(m_isOnTop);
+}
+
+void FileClient::handleRemoteTabClosed()
+{
+    // 断开连接
+    handleDisconnect();
 }

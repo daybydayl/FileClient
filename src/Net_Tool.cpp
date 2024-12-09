@@ -235,6 +235,11 @@ bool Net_Tool::receiveMessage(T& message, char type) {
     //把序列化部分数据拿到
     serialized += std::string(buff+sizeof(int)+sizeof(char), ret-sizeof(int)-sizeof(char));
 
+    /*
+    现在这种情况是先查看，然后全部取出
+    */
+
+    
     //现在是阻塞模式，查看不到数据的话也会阻塞中
     // while((ret = peek_read(buff, sizeof(buff))) && ret > 0) {
     //     //有可能没拿完，一般不会进入这个while

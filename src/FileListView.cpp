@@ -20,6 +20,7 @@
 #include <QMessageBox>
 #include <QGuiApplication>
 #include <QScreen>
+#include <QFileIconProvider>
 
 ChineseFileSystemModel::ChineseFileSystemModel(QObject* parent)
     : QFileSystemModel(parent)
@@ -64,7 +65,7 @@ QVariant ChineseFileSystemModel::data(const QModelIndex &index, int role) const
             } else if (suffix == "jpg" || suffix == "jpeg" || suffix == "png" || suffix == "gif" || suffix == "bmp") {
                 return tr("图像文件");
             } else if (suffix == "mp3" || suffix == "wav" || suffix == "wma") {
-                return tr("音频��件");
+                return tr("音频文件");
             } else if (suffix == "mp4" || suffix == "avi" || suffix == "mkv") {
                 return tr("视频文件");
             } else if (suffix == "zip" || suffix == "rar" || suffix == "7z") {
@@ -145,8 +146,12 @@ void FileListView::initUI()
     });
 
     // 创建第一个标签页，使用本地/远程作为基础标题
-    QString baseTitle = (m_title == tr("本地")) ? tr("本地") : tr("远程");
-    createNewTabPage(AppConfig::instance().defaultLocalPath(), baseTitle + "1");
+    //QString baseTitle = (m_title == tr("本地")) ? tr("本地") : tr("远程");
+    if(m_title == tr("本地"))
+    {//如果是左边本地，就首次创建tab
+        createNewTabPage(AppConfig::instance().defaultLocalPath(), "");  // 本地标签页不传自定义标题
+    }
+    
 }
 
 void FileListView::updateAddButtonPosition()
@@ -163,28 +168,37 @@ void FileListView::updateAddButtonPosition()
         tabBar->x() + lastTabRect.right() + 4,  // 4px的间距
         tabBar->y() + (lastTabRect.height() - m_addTabButton->height()) / 2
     );
-    m_addTabButton->raise();  // 确保按钮在最上层
+    m_addTabButton->raise();  // 确保按在最上层
     m_addTabButton->show();
 }
 
 void FileListView::createNewTabPage(const QString& path, const QString& customTitle)
 {
-    FileTabPage* page = new FileTabPage(this);
-    QString tabPath = path.isEmpty() ? AppConfig::instance().defaultLocalPath() : path;
+    bool isRemote = !customTitle.isEmpty();  // 如果有自定义标题，说明是远程标签页
+    FileTabPage* page = new FileTabPage(this, isRemote);
+    
+    // 设置路径
+    QString tabPath;
+    if (path.isEmpty()) {
+        // 如果是本地标签页且没有指定路径，使用默认本地路径
+        tabPath = isRemote ? "/" : AppConfig::instance().defaultLocalPath();
+    } else {
+        tabPath = path;
+    }
     page->setRootPath(tabPath);
     
-    // 使用自定义标题或生成新的标题
-    QString tabName;
+    // 设置标题
+    QString title;
     if (!customTitle.isEmpty()) {
-        tabName = customTitle;
+        title = customTitle;
     } else {
         // 为新标签页生成标题（本地2、本地3...或远程2、远程3...）
         QString baseTitle = (m_title == tr("本地")) ? tr("本地") : tr("远程");
         int num = m_tabWidget->count() + 1;
-        tabName = baseTitle + QString::number(num);
+        title = baseTitle + QString::number(num);
     }
     
-    int index = m_tabWidget->addTab(page, tabName);
+    int index = m_tabWidget->addTab(page, title);
     m_tabWidget->setCurrentIndex(index);
     
     // 更新添加按钮位置
@@ -221,7 +235,7 @@ QString FileListView::rootPath() const
 QString FileListView::filePath(const QModelIndex& index) const
 {
     FileTabPage* currentPage = qobject_cast<FileTabPage*>(m_tabWidget->currentWidget());
-    return currentPage ? currentPage->model()->filePath(index) : QString();
+    return currentPage ? currentPage->filePath(index) : QString();
 }
 
 QModelIndexList FileListView::selectedIndexes() const
@@ -266,22 +280,35 @@ void FileListView::startDrag(Qt::DropActions supportedActions)
     QList<QUrl> urls;
     
     for (const QModelIndex& index : indexes) {
-        QString filePath = currentPage->model()->filePath(index);
-        urls << QUrl::fromLocalFile(filePath);
+        if (index.column() == 0) {  // 只处理第一列
+            QString path = currentPage->filePath(index);
+            if (!path.isEmpty()) {
+                urls << QUrl::fromLocalFile(path);
+            }
+        }
     }
     
-    mimeData->setUrls(urls);
-    
-    QDrag* drag = new QDrag(this);
-    drag->setMimeData(mimeData);
-    
-    if (urls.count() == 1) {
-        QFileInfo fileInfo(urls.first().toLocalFile());
-        QPixmap icon = currentPage->model()->fileIcon(indexes.first()).pixmap(32, 32);
-        drag->setPixmap(icon);
+    if (!urls.isEmpty()) {
+        mimeData->setUrls(urls);
+        QDrag* drag = new QDrag(this);
+        drag->setMimeData(mimeData);
+        
+        // 设置拖拽图标
+        if (urls.count() == 1) {
+            QFileInfo fileInfo(urls.first().toLocalFile());
+            QIcon icon;
+            if (currentPage->isRemote()) {
+                static QFileIconProvider iconProvider;
+                icon = fileInfo.isDir() ? iconProvider.icon(QFileIconProvider::Folder)
+                                      : iconProvider.icon(QFileIconProvider::File);
+            } else {
+                icon = currentPage->fileSystemModel()->fileIcon(indexes.first());
+            }
+            drag->setPixmap(icon.pixmap(32, 32));
+        }
+        
+        drag->exec(supportedActions);
     }
-    
-    drag->exec(supportedActions);
 }
 
 void FileListView::handleDroppedFiles(const QList<QUrl>& urls)
@@ -316,16 +343,35 @@ void FileListView::addNewTab()
     // 为新标签页生成标题
     QString baseTitle = (m_title == tr("本地")) ? tr("本地") : tr("远程");
     int num = m_tabWidget->count() + 1;
-    QString newTitle = baseTitle + QString::number(num);
-    createNewTabPage(QString(), newTitle);
+    QString newTitle;
+    createNewTabPage(AppConfig::instance().defaultLocalPath(), newTitle);
 }
 
 void FileListView::closeTab(int index)
 {
-    if (m_tabWidget->count() > 1) {
-        QWidget* widget = m_tabWidget->widget(index);
-        m_tabWidget->removeTab(index);
-        delete widget;
+    if (m_tabWidget->count() > 0) {
+        FileTabPage* page = qobject_cast<FileTabPage*>(m_tabWidget->widget(index));
+        if (page) {
+            bool isRemote = page->isRemote();
+            m_tabWidget->removeTab(index);
+            delete page;
+
+            // 如果关闭的是远程标签页，并且没有其他远程标签页了，发出信号
+            if (isRemote) {
+                bool hasRemoteTab = false;
+                for (int i = 0; i < m_tabWidget->count(); ++i) {
+                    if (FileTabPage* p = qobject_cast<FileTabPage*>(m_tabWidget->widget(i))) {
+                        if (p->isRemote()) {
+                            hasRemoteTab = true;
+                            break;
+                        }
+                    }
+                }
+                if (!hasRemoteTab) {
+                    emit remoteTabClosed();
+                }
+            }
+        }
     }
 }
 
@@ -375,33 +421,48 @@ void FileListView::addServerTab(const QString& serverAddress, const QString& roo
     createNewTabPage(rootPath, tabName);
 }
 
+void FileListView::addFileEntry(const QString& name, const QString& path, 
+                              bool isDir, qint64 size, const QDateTime& modTime)
+{
+    FileTabPage* currentPage = qobject_cast<FileTabPage*>(m_tabWidget->currentWidget());
+    if (!currentPage) return;
+
+    RemoteFileInfo fileInfo;
+    fileInfo.name = name;
+    fileInfo.path = path;
+    fileInfo.isDirectory = isDir;
+    fileInfo.size = size;
+    fileInfo.modifyTime = modTime;
+    
+    if (auto* model = qobject_cast<RemoteFileSystemModel*>(currentPage->model())) {
+        model->addFile(fileInfo);
+    }
+}
+
 // 实现FileTabPage类
-FileTabPage::FileTabPage(QWidget* parent)
+FileTabPage::FileTabPage(QWidget* parent, bool isRemote)
     : QWidget(parent)
     , m_layout(nullptr)
     , m_treeView(nullptr)
     , m_model(nullptr)
+    , m_remoteModel(nullptr)
+    , m_isRemote(isRemote)
 {
     m_layout = new QVBoxLayout(this);
     m_layout->setContentsMargins(0, 0, 0, 0);
     m_layout->setSpacing(0);
-
-    // 创建文件树视图
-    m_treeView = new QTreeView(this);
-    m_treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);// 设置选择模式为扩展选择,允许用户通过Ctrl/Shift选择多个项目
-    m_treeView->setDragEnabled(true);// 启用拖拽功能,允许从视图中拖拽���目
-    m_treeView->setAcceptDrops(true);// 允许接受拖放操作,可以接收拖拽的项目
-    m_treeView->setDropIndicatorShown(true);// 显示拖放指示器,拖拽时显示可放置位置的提示
-    m_treeView->setDragDropMode(QAbstractItemView::DragDrop);// 设置拖放模式为DragDrop,允许同时进行拖拽和放置操作
-    m_treeView->setEditTriggers(QAbstractItemView::EditKeyPressed | QAbstractItemView::SelectedClicked);// 设置编辑触发条件:按F2键或双击选中项可以编辑
-    m_treeView->setRootIsDecorated(false);// 不显示根节点的装饰器(展开/折叠图标)
-    m_treeView->setItemsExpandable(false);// 禁止展开/折叠项目,因为是平面文件列表
     
-    m_model = new ChineseFileSystemModel(this);
-    m_model->setReadOnly(false);
-    updateHiddenFilesFilter();
-    m_treeView->setModel(m_model);
-
+    m_treeView = new QTreeView(this);
+    m_layout->addWidget(m_treeView);
+    
+    if (m_isRemote) {
+        m_remoteModel = new RemoteFileSystemModel(this);
+        m_treeView->setModel(m_remoteModel);
+    } else {
+        m_model = new ChineseFileSystemModel(this);
+        m_treeView->setModel(m_model);
+    }
+    
     // 根据 DPI 调整列宽
     QScreen *screen = QGuiApplication::primaryScreen();
     qreal dpi = screen->logicalDotsPerInch();
@@ -412,7 +473,7 @@ FileTabPage::FileTabPage(QWidget* parent)
     m_treeView->setColumnWidth(2, qRound(100 * scale));  // 类型列
     m_treeView->setColumnWidth(3, qRound(150 * scale));  // 修改日期列
     
-    // 调整行高
+    // 调整高
     // 这是Qt样式表(QSS)的写法,类似于CSS样式
     // 使用QString的arg()方法动态设置item的高度
     // QTreeView::item 选择器用于设置树视图中所有项目的样式
@@ -424,14 +485,12 @@ FileTabPage::FileTabPage(QWidget* parent)
         " padding: 2px 2px;"      // 设置内边距:上下2px,左右2px
         "}"
         // "QLineEdit { "
-        // " height: %1px;"          // 设置编辑框高度为28像素
+        // " height: %1px;"          // 设置编辑框高度为28像
         // " font-size: 10px;"       // 设置编辑框字体大小为16像素
         // " padding: 2px 4px;"      // 设置编辑框内边距
         // "}"
     ).arg(qRound(25 * scale)));   // 将计算后的高度值替换到%1的位置
     
-    m_layout->addWidget(m_treeView);
-
     // 连接信号
     connect(m_treeView, &QTreeView::doubleClicked, this, [this](const QModelIndex &index) {
         QString path = m_model->filePath(index);
@@ -441,7 +500,7 @@ FileTabPage::FileTabPage(QWidget* parent)
         }
     });
 
-    m_treeView->setContextMenuPolicy(Qt::CustomContextMenu);  // 设置右键菜单策略为自定义,允许我们自己���理右键菜单
+    m_treeView->setContextMenuPolicy(Qt::CustomContextMenu);  // 设置右键菜单策略为自定义,允我们自己理右键菜单
     // 连接右键菜单信号 - 当用户在树视图中点击右键时,会触发showContextMenu函数来显示上下文菜单
     connect(m_treeView, &QTreeView::customContextMenuRequested,
             this, &FileTabPage::showContextMenu);
@@ -470,26 +529,42 @@ void FileTabPage::onConfigChanged()
 
 void FileTabPage::setRootPath(const QString& path)
 {
-    QModelIndex rootIndex = m_model->setRootPath(path);
-    m_treeView->setRootIndex(rootIndex);
+    if (m_isRemote) {
+        if (auto* model = qobject_cast<RemoteFileSystemModel*>(m_remoteModel)) {
+            model->setCurrentPath(path);
+        }
+    } else {
+        QModelIndex rootIndex = m_model->setRootPath(path);
+        m_treeView->setRootIndex(rootIndex);
+    }
 }
 
 QString FileTabPage::rootPath() const
 {
-    return m_model->rootPath();
+    if (m_isRemote) {
+        if (auto* model = qobject_cast<RemoteFileSystemModel*>(m_remoteModel)) {
+            return model->currentPath();
+        }
+        return QString();
+    } else {
+        return m_model->rootPath();
+    }
 }
 
 void FileTabPage::showContextMenu(const QPoint& pos)
 {
     QModelIndex index = m_treeView->indexAt(pos);
-    // 这段代码用于获取当前路径:
-    // 1. 如果有选中项(index.isValid()为true):
-    //    - 如果选中的是文件夹,则使用该文件夹路径
-    //    - 如果选中的是文件,则使用该文件所在文件夹的路径
-    // 2. 如果没有选中项,则使用当前视图的根路径
-    QString currentPath = index.isValid() ? 
-        QFileInfo(m_model->filePath(index)).isDir() ? m_model->filePath(index) : m_model->filePath(index.parent()) :
-        m_model->filePath(m_treeView->rootIndex());
+    QString currentPath;
+    
+    if (m_isRemote) {
+        if (auto* model = qobject_cast<RemoteFileSystemModel*>(m_remoteModel)) {
+            currentPath = model->currentPath();
+        }
+    } else {
+        currentPath = index.isValid() ? 
+            QFileInfo(m_model->filePath(index)).isDir() ? m_model->filePath(index) : m_model->filePath(index.parent()) :
+            m_model->filePath(m_treeView->rootIndex());
+    }
 
     QMenu menu(this);
     
@@ -697,7 +772,7 @@ void FileTabPage::deleteSelectedFiles()
         QFileInfo fileInfo(filePath);
         message = tr("确定要删除 \"%1\" %2吗？")
             .arg(fileInfo.fileName())
-            .arg(fileInfo.isDir() ? tr("及��包含的所有文件") : "");
+            .arg(fileInfo.isDir() ? tr("及包含的所有文件") : "");
     } else {
         message = tr("确定要删除选中的 %1 个项目吗？").arg(indexes.count());
     }
