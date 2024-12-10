@@ -9,7 +9,6 @@
 #include "FileListView.h"
 #include "LogWidget.h"
 #include "ProgressWidget.h"
-//#include "../shared/NetworkManager.h"
 #include "TaskManagerDialog.h"
 #include "ConfigDialog.h"
 #include "TransferHistoryDialog.h"
@@ -20,6 +19,8 @@
 #include <windows.h>
 #include <QGuiApplication>
 #include <QScreen>
+
+Net_Tool* FileClient::m_netTool = Net_Tool::getInstance();
 
 FileClient::FileClient(QWidget *parent)
     : QMainWindow(parent)
@@ -39,7 +40,7 @@ FileClient::FileClient(QWidget *parent)
     , m_downloadAction(nullptr)
     , m_onTopButton(nullptr)
     , m_isOnTop(false)
-    , m_netTool(Net_Tool::getInstance())
+    //, m_netTool(Net_Tool::getInstance())
 {
     // 设置窗口标题和大小
     setWindowTitle(tr("File Transfer Client"));
@@ -298,7 +299,7 @@ void FileClient::handleConnect()
         // 发送目录请求报文
         transfer::DirectoryRequest request;
         request.mutable_header()->set_type(transfer::DIRECTORY);
-        request.set_current_path("/");
+        request.set_current_path("");
         request.set_dir_name("");
         request.set_is_parent(false);
         
@@ -320,22 +321,7 @@ void FileClient::handleConnect()
         QString serverAddress = QString("%1:%2").arg(serverIP).arg(port);
         m_remoteView->addServerTab(serverAddress, "/");
 
-        // 处理目录响应数据
-        if (response.header().success()) {  // 检查响应是否成功
-            // 遍历files数组
-            QString currentPath = QString::fromStdString(response.path());
-            for (const auto& file : response.files()) {
-                QString name = QString::fromStdString(file.name());
-                bool isDir = file.is_directory();
-                qint64 size = file.size();
-                QString modifyTime = QString::fromStdString(file.modify_time());
-                
-                // 使用modify_time字符串创建QDateTime
-                QDateTime modTime = QDateTime::fromString(modifyTime, Qt::ISODate);
-                
-                m_remoteView->addFileEntry(name, currentPath, isDir, size, modTime);
-            }
-        }
+        m_remoteView->dispatchRemoteResponse(response);
         
         m_logWidget->appendLog(tr("成功连接到服务器 %1:%2").arg(serverIP).arg(port));
     } else {

@@ -14,6 +14,8 @@
 #include <QTreeWidget>
 #include <QTextEdit>
 #include "RemoteFileSystemModel.h"
+#include "protos/transfer.pb.h"
+#include "FileClient.h"
 /**
  * @brief 中文文件系统模型类
  * 
@@ -39,7 +41,7 @@ public:
  * 负责:
  * 1. 显示本地或远程文件系统的树形视图
  * 2. 提供文件操作功能(复制、粘贴、删除等)
- * 3. 支持文件���操作
+ * 3. 支持文件操作
  * 4. 管理文系统模型和过滤器
  */
 class FileListView : public QWidget
@@ -47,33 +49,51 @@ class FileListView : public QWidget
     Q_OBJECT
     
 public:
+    // 构造函数,创建文件列表视图
     explicit FileListView(const QString& title, QWidget *parent = nullptr);
+    // 析构函数
     ~FileListView();
 
+    // 设置根目录路径
     void setRootPath(const QString& path);
+    // 获取当前根目录路径
     QString rootPath() const;
+    // 获取指定索引的文件路径
     QString filePath(const QModelIndex& index) const;
+    // 获取当前选中的所有项目索引
     QModelIndexList selectedIndexes() const;
     
+    // 清空所有标签页
     void clear();
+    // 添加远程服务器标签页
     void addServerTab(const QString& serverAddress, const QString& rootPath);
+    // 判断是否没有标签页
     bool isEmpty() const { return m_tabWidget->count() == 0; }
+    // 显示视图
     void show() { QWidget::show(); }
+    // 如果没有标签页则隐藏视图
     void hide() { if(m_tabWidget->count()==0) QWidget::hide(); }
+    
+    // 远程响应分发
+    void dispatchRemoteResponse(const transfer::DirectoryResponse& response);
 
-    void addFileEntry(const QString& name, const QString& path, bool isDir, 
-                     qint64 size, const QDateTime& modTime);
+    // 判断视图是否可见                 
     bool isVisible() const { return QWidget::isVisible(); }
 
 public slots:
+    // 关闭指定索引的标签页
     void closeTab(int index);
 
 signals:
+    // 当最后一个远程标签页关闭时发出信号
     void remoteTabClosed();
 
 private slots:
+    // 添加新标签页
     void addNewTab();
+    // 导航到上级目录
     void navigateUp();
+    // 更新添加按钮位置
     void updateAddButtonPosition();
 
 private:
@@ -97,60 +117,62 @@ private:
 
 /**
  * @brief 单个文件标签页的内容组件
- * 
- * 负责:
- * 1. 管理单个文件视图的显示和操作
- * 2. 处理右键菜单和文件操作
- * 3. 提供文件属性查看功能
  */
 class FileTabPage : public QWidget
 {
     Q_OBJECT
     
 public:
+    // 构造函数,创建文件标签页
     explicit FileTabPage(QWidget* parent = nullptr, bool isRemote = false);
+    // 设置标签页的根目录路径
     void setRootPath(const QString& path);
+    // 获取当前根目录路径
     QString rootPath() const;
+    // 获取树形视图控件
     QTreeView* treeView() const { return m_treeView; }
+    // 获取当前使用的数据模型(本地/远程)
     QAbstractItemModel* model() const { return m_isRemote ? static_cast<QAbstractItemModel*>(m_remoteModel) 
                                                         : static_cast<QAbstractItemModel*>(m_model); }
+    // 判断是否为远程标签页                                                    
     bool isRemote() const { return m_isRemote; }
+    // 获取本地文件系统模型
     ChineseFileSystemModel* fileSystemModel() const { return m_model; }
     
-    QString filePath(const QModelIndex& index) const {
-        if (!index.isValid()) return QString();
-        
-        if (m_isRemote) {
-            if (auto* model = qobject_cast<RemoteFileSystemModel*>(m_remoteModel)) {
-                const RemoteFileInfo& fileInfo = model->fileInfo(index);
-                return model->currentPath() + "/" + fileInfo.name;
-            }
-            return QString();
-        } else {
-            return m_model->filePath(index);
-        }
-    }
+    // 获取指定索引的文件路径
+    QString filePath(const QModelIndex& index) const;
 
 private slots:
+    // 显示右键菜单
     void showContextMenu(const QPoint& pos);
+    // 配置变更时更新视图
     void onConfigChanged();
     
 private:
+    // 复制选中的文件
     void copySelectedFiles();
+    // 粘贴文件
     void pasteFiles();
+    // 显示文件属性对话框
     void showProperties(const QString& filePath);
+    // 格式化文件大小显示
     QString formatFileSize(qint64 size);
+    // 更新隐藏文件的过滤设置
     void updateHiddenFilesFilter();
+    // 删除选中的文件
     void deleteSelectedFiles();
+    // 在指定路径创建新文件夹
     void createNewFolder(const QString& parentPath);
+    // 在指定路径创建新文件
     void createNewFile(const QString& parentPath);
-    QString formatTime(qint64 milliseconds);  // 添加时间格式化方法
+    // 格式化时间显示
+    QString formatTime(qint64 milliseconds);
 
-    QVBoxLayout* m_layout;
-    QTreeView* m_treeView;
-    ChineseFileSystemModel* m_model;
-    RemoteFileSystemModel* m_remoteModel;
-    bool m_isRemote;
+    QVBoxLayout* m_layout;              // 主布局
+    QTreeView* m_treeView;             // 树形视图控件
+    ChineseFileSystemModel* m_model;    // 本地文件系统模型
+    RemoteFileSystemModel* m_remoteModel; // 远程文件系统模型
+    bool m_isRemote;                    // 是否为远程标签页
 };
 
 #endif // FILELISTVIEW_H 

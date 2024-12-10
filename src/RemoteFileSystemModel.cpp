@@ -83,4 +83,28 @@ void RemoteFileSystemModel::addFile(const RemoteFileInfo& fileInfo)
     beginInsertRows(QModelIndex(), m_files.size(), m_files.size());
     m_files.append(fileInfo);
     endInsertRows();
+}
+
+void RemoteFileSystemModel::updateModel(const transfer::DirectoryResponse& response) 
+{
+    if(response.header().success()) {
+        // 清空当前数据
+        clear();
+        
+        // 遍历并添加新的文件条目
+        for(const auto& file : response.files()) {
+            RemoteFileInfo fileInfo;
+            fileInfo.name = QString::fromStdString(file.name());
+            fileInfo.path = QString::fromStdString(response.path());
+            if(fileInfo.name=="." || (response.path()=="/"&&fileInfo.name == ".."))
+            {//.项和根目录下..项不显示
+                continue;
+            }
+            fileInfo.isDirectory = file.is_directory();
+            fileInfo.size = file.size();
+            fileInfo.modifyTime = QDateTime::fromString(QString::fromStdString(file.modify_time()), Qt::ISODate);
+            
+            addFile(fileInfo);
+        }
+    }
 } 

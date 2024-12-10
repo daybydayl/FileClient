@@ -217,7 +217,7 @@ void FileListView::setRootPath(const QString& path)
     if (currentPage) {
         currentPage->setRootPath(path);
         
-        // 更新标签页标题
+        // 更新标签页标题为目录名
         QString tabName = QDir(path).dirName();
         if (tabName.isEmpty()) {
             tabName = path;
@@ -421,21 +421,13 @@ void FileListView::addServerTab(const QString& serverAddress, const QString& roo
     createNewTabPage(rootPath, tabName);
 }
 
-void FileListView::addFileEntry(const QString& name, const QString& path, 
-                              bool isDir, qint64 size, const QDateTime& modTime)
+void FileListView::dispatchRemoteResponse(const transfer::DirectoryResponse& response)
 {
     FileTabPage* currentPage = qobject_cast<FileTabPage*>(m_tabWidget->currentWidget());
     if (!currentPage) return;
 
-    RemoteFileInfo fileInfo;
-    fileInfo.name = name;
-    fileInfo.path = path;
-    fileInfo.isDirectory = isDir;
-    fileInfo.size = size;
-    fileInfo.modifyTime = modTime;
-    
     if (auto* model = qobject_cast<RemoteFileSystemModel*>(currentPage->model())) {
-        model->addFile(fileInfo);
+        model->updateModel(response);
     }
 }
 
@@ -545,7 +537,28 @@ FileTabPage::FileTabPage(QWidget* parent, bool isRemote)
             if(isDir)
             {//双击目录
                 //发送目录请求给服务端
-                int a = 0;//test
+                transfer::DirectoryRequest request;
+                request.mutable_header()->set_type(transfer::DIRECTORY);
+                request.set_current_path(fileInfo.path.toStdString());//当前路径
+                request.set_dir_name(fileInfo.name.toStdString());//当前目录文件
+                request.set_is_parent(false);
+                if(fileInfo.name=="..")
+                {
+                    request.set_is_parent(true);
+                }   
+                
+                transfer::DirectoryResponse response = FileClient::m_netTool->sendDirectoryRequest(request);
+
+                // 更新当前路径
+                //QString newPath = fileInfo.path + "/" + fileInfo.name;
+                QString newPath = response.path().c_str();
+                if(newPath.contains("//")) {
+                    newPath = newPath.replace("//", "/");
+                }
+                model->setCurrentPath(newPath);
+
+                // 更新模型数据
+                model->updateModel(response);
             }
             else
             {//双击文件
@@ -615,6 +628,21 @@ QString FileTabPage::rootPath() const
         return m_model->rootPath();
     }
 }
+
+QString FileTabPage::filePath(const QModelIndex& index) const
+{
+        if (!index.isValid()) return QString();
+        
+        if (m_isRemote) {
+            if (auto* model = qobject_cast<RemoteFileSystemModel*>(m_remoteModel)) {
+                const RemoteFileInfo& fileInfo = model->fileInfo(index);
+                return model->currentPath() + "/" + fileInfo.name;
+            }
+            return QString();
+        } else {
+            return m_model->filePath(index);
+        }
+    }
 
 void FileTabPage::showContextMenu(const QPoint& pos)
 {

@@ -4,6 +4,7 @@
 #include <QAbstractItemModel>
 #include <QDateTime>
 #include <QVector>
+#include "protos/transfer.pb.h"
 
 struct RemoteFileInfo {
     QString name;
@@ -39,6 +40,9 @@ public:
     const RemoteFileInfo& fileInfo(const QModelIndex& index) const {
         return m_files[index.row()];
     }
+
+    // 使用响应数据更新模型
+    void updateModel(const transfer::DirectoryResponse& response);
 
 private:
     QVector<RemoteFileInfo> m_files;

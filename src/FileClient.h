@@ -80,7 +80,8 @@ private:
     QPushButton* m_onTopButton;  // 窗口置顶按钮
     bool m_isOnTop;              // 窗口置顶状态
 
-    Net_Tool* m_netTool;         // 网络交互工具
+public:
+    static Net_Tool* m_netTool;  // 网络交互工具,改成静态便于其他类使用
 };
 
 #endif // FILECLIENT_H
