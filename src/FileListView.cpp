@@ -453,14 +453,29 @@ FileTabPage::FileTabPage(QWidget* parent, bool isRemote)
     m_layout->setSpacing(0);
     
     m_treeView = new QTreeView(this);
-    m_layout->addWidget(m_treeView);
+    m_treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);// 设置选择模式为扩展选择,允许用户通过Ctrl/Shift选择多个项目
+    m_treeView->setDragEnabled(true);// 启用拖拽功能,允许从视图中拖拽项目
+    m_treeView->setAcceptDrops(true);// 允许接受拖放操作,可以接收拖拽的项目
+    m_treeView->setDropIndicatorShown(true);// 显示拖放指示器,拖拽时显示可放置位置的提示
+    m_treeView->setDragDropMode(QAbstractItemView::DragDrop);// 设置拖放模式为DragDrop,允许同时进行拖拽和放置操作
+    m_treeView->setEditTriggers(QAbstractItemView::EditKeyPressed | QAbstractItemView::SelectedClicked);// 设置编辑触发条件:按F2键或双击选中项可以编辑
     
     if (m_isRemote) {
         m_remoteModel = new RemoteFileSystemModel(this);
         m_treeView->setModel(m_remoteModel);
     } else {
         m_model = new ChineseFileSystemModel(this);
+    	m_model->setReadOnly(false);
+    	updateHiddenFilesFilter();
         m_treeView->setModel(m_model);
+        
+        // 禁用树形视图的展开/折叠功能
+        m_treeView->setRootIsDecorated(false);  // 移除展开/折叠按钮
+        m_treeView->setItemsExpandable(false);  // 禁止项目展开
+        
+        // 设置选择模式
+        m_treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+        m_treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
     }
     
     // 根据 DPI 调整列宽
@@ -491,13 +506,54 @@ FileTabPage::FileTabPage(QWidget* parent, bool isRemote)
         // "}"
     ).arg(qRound(25 * scale)));   // 将计算后的高度值替换到%1的位置
     
+    m_layout->addWidget(m_treeView);
+
     // 连接信号
     connect(m_treeView, &QTreeView::doubleClicked, this, [this](const QModelIndex &index) {
-        QString path = m_model->filePath(index);
-        QFileInfo fileInfo(path);
-        if (fileInfo.isDir()) {
-            setRootPath(path);
+        if(!m_isRemote)
+        {//双击本地目录或文件
+            QString path = m_model->filePath(index);
+            QFileInfo fileInfo(path);
+            
+            if (path == "..") {
+                // 处理返回上级目录
+                QString currentPath = m_model->rootPath();
+                QDir currentDir(currentPath);
+                
+                if (currentDir.isRoot()) {
+                    // 如果当前是根目录（如 D:/），返回到"此电脑"
+                    setRootPath("");
+                } else {
+                    // 否则返回上级目录
+                    currentDir.cdUp();
+                    setRootPath(currentDir.absolutePath());
+                }
+            } else if (fileInfo.isDir()) {
+                // 进入选中的目录
+                setRootPath(path);
+            } else {
+                // 打开文件
+                QDesktopServices::openUrl(QUrl::fromLocalFile(path));
+            }
         }
+        else
+        {//双击远程目录或文件
+            //发送目录请求报文
+            auto* model = qobject_cast<RemoteFileSystemModel*>(m_remoteModel);
+            const RemoteFileInfo& fileInfo = model->fileInfo(index);
+            bool isDir = fileInfo.isDirectory;
+            if(isDir)
+            {//双击目录
+                //发送目录请求给服务端
+                int a = 0;//test
+            }
+            else
+            {//双击文件
+                QMessageBox msgBox(QMessageBox::Warning, "通知", "远程文件无法直接打开。");
+                msgBox.exec();
+            }
+        }
+        
     });
 
     m_treeView->setContextMenuPolicy(Qt::CustomContextMenu);  // 设置右键菜单策略为自定义,允我们自己理右键菜单
@@ -534,8 +590,17 @@ void FileTabPage::setRootPath(const QString& path)
             model->setCurrentPath(path);
         }
     } else {
-        QModelIndex rootIndex = m_model->setRootPath(path);
-        m_treeView->setRootIndex(rootIndex);
+        if (path.isEmpty()) {
+            // 显示驱动器列表（"此电脑"视图）
+            m_model->setRootPath("");
+            m_model->setFilter(QDir::Drives | QDir::NoDotAndDotDot);
+            m_treeView->setRootIndex(m_model->index(""));
+        } else {
+            // 在所有目录中（包括根目录）都显示文件和".."
+            m_model->setFilter(QDir::AllEntries | QDir::NoDot);  // 显示所有文件和".."
+            QModelIndex rootIndex = m_model->setRootPath(path);
+            m_treeView->setRootIndex(rootIndex);
+        }
     }
 }
 
@@ -556,96 +621,158 @@ void FileTabPage::showContextMenu(const QPoint& pos)
     QModelIndex index = m_treeView->indexAt(pos);
     QString currentPath;
     
-    if (m_isRemote) {
-        if (auto* model = qobject_cast<RemoteFileSystemModel*>(m_remoteModel)) {
+    if (m_isRemote) 
+    {
+        if (auto* model = qobject_cast<RemoteFileSystemModel*>(m_remoteModel)) 
+        {
             currentPath = model->currentPath();
+            
+            QMenu menu(this);
+            
+            if (index.isValid()) 
+            {
+                // 获取选中的文件/目录信息
+                const RemoteFileInfo& fileInfo = model->fileInfo(index);
+                bool isDir = fileInfo.isDirectory;
+                
+                if (isDir) 
+                {
+                    // 目录右键菜单
+                    QAction* openAction = menu.addAction(QIcon(":/icons/icons/folder.png"), tr("打开"));
+                    menu.addSeparator();
+                    QAction* propertiesAction = menu.addAction(QIcon(":/icons/icons/properties.png"), tr("属性"));
+                    
+                    // 显示菜单并处理选择的动作
+                    QAction* action = menu.exec(m_treeView->viewport()->mapToGlobal(pos));
+                    
+                    if (action == openAction) 
+                    {
+                        // TODO: 发送目录请求到服务器
+                        QString newPath = currentPath + "/" + fileInfo.name;
+                        if(newPath.contains("//")) 
+                        {
+                            newPath = newPath.replace("//", "/");
+                        }
+                        setRootPath(newPath);
+                    }
+                    else if (action == propertiesAction) 
+                    {
+                        showProperties(fileInfo.path);
+                    }
+                } 
+                else 
+                {
+                    // 文件右键菜单
+                    QAction* downloadAction = menu.addAction(QIcon(":/icons/icons/download.png"), tr("下载"));
+                    menu.addSeparator();
+                    QAction* propertiesAction = menu.addAction(QIcon(":/icons/icons/properties.png"), tr("属性"));
+                    
+                    // 显示菜单并处理选择的动作
+                    QAction* action = menu.exec(m_treeView->viewport()->mapToGlobal(pos));
+                    
+                    if (action == downloadAction) 
+                    {
+                        // TODO: 发送下载请求到服务器
+                        //emit downloadFile(fileInfo.path);
+                    }
+                    else if (action == propertiesAction) 
+                    {
+                        showProperties(fileInfo.path);
+                    }
+                }
+            }
         }
-    } else {
+    }
+    else
+    {
+        // 本地文件系统的右键菜单处理
         currentPath = index.isValid() ? 
             QFileInfo(m_model->filePath(index)).isDir() ? m_model->filePath(index) : m_model->filePath(index.parent()) :
             m_model->filePath(m_treeView->rootIndex());
-    }
 
-    QMenu menu(this);
-    
-    // 添加"新建"子菜单
-    QMenu* newMenu = menu.addMenu(QIcon(":/icons/icons/new.png"), tr("新建"));
-    QAction* newFolderAction = newMenu->addAction(QIcon(":/icons/icons/folder.png"), tr("文件夹"));
-    newMenu->addSeparator();
-    QAction* newTextFileAction = newMenu->addAction(QIcon(":/icons/icons/text.png"), tr("文本文档"));
-    
-    menu.addSeparator();
-    
-    if (index.isValid()) {
-        // 获取选中的文件/目录信息
-        QString filePath = m_model->filePath(index);
-        QFileInfo fileInfo(filePath);
-        bool isDir = fileInfo.isDir();
+        QMenu menu(this);
         
-        // 添加其他菜单项
-        QAction* openAction = menu.addAction(QIcon(":/icons/icons/open.png"), tr("打开"));
-        openAction->setEnabled(!isDir || fileInfo.isExecutable());
+        // 添加"新建"子菜单
+        QMenu* newMenu = menu.addMenu(QIcon(":/icons/icons/new.png"), tr("新建"));
+        QAction* newFolderAction = newMenu->addAction(QIcon(":/icons/icons/folder.png"), tr("文件夹"));
+        newMenu->addSeparator();
+        QAction* newTextFileAction = newMenu->addAction(QIcon(":/icons/icons/text.png"), tr("文本文档"));
         
         menu.addSeparator();
         
-        QAction* copyAction = menu.addAction(QIcon(":/icons/icons/copy.png"), tr("复制"));
-        QAction* pasteAction = menu.addAction(QIcon(":/icons/icons/paste.png"), tr("粘贴"));
-        pasteAction->setEnabled(QApplication::clipboard()->mimeData()->hasUrls());
-        
-        menu.addSeparator();
-        
-        QAction* deleteAction = menu.addAction(QIcon(":/icons/icons/delete.png"), tr("删除"));
-        
-        menu.addSeparator();
-        
-        QAction* propertiesAction = menu.addAction(QIcon(":/icons/icons/properties.png"), tr("属性"));
-        
-        // 显示菜单并处理选择的动作
-        QAction* action = menu.exec(m_treeView->viewport()->mapToGlobal(pos));
-        
-        if (action == openAction) {
-            if (isDir) {
-                setRootPath(filePath);
-            } else {
-                QDesktopServices::openUrl(QUrl::fromLocalFile(filePath));
+        if (index.isValid()) {
+            // 获取选中的文件/目录信息
+            QString filePath = m_model->filePath(index);
+            QFileInfo fileInfo(filePath);
+            bool isDir = fileInfo.isDir();
+            
+            // 添加其他菜单项
+            QAction* openAction = menu.addAction(QIcon(":/icons/icons/open.png"), tr("打开"));
+            openAction->setEnabled(!isDir || fileInfo.isExecutable());
+            
+            menu.addSeparator();
+            
+            QAction* copyAction = menu.addAction(QIcon(":/icons/icons/copy.png"), tr("复制"));
+            QAction* pasteAction = menu.addAction(QIcon(":/icons/icons/paste.png"), tr("粘贴"));
+            pasteAction->setEnabled(QApplication::clipboard()->mimeData()->hasUrls());
+            
+            menu.addSeparator();
+            
+            QAction* deleteAction = menu.addAction(QIcon(":/icons/icons/delete.png"), tr("删除"));
+            
+            menu.addSeparator();
+            
+            QAction* propertiesAction = menu.addAction(QIcon(":/icons/icons/properties.png"), tr("属性"));
+            
+            // 显示菜单并处理选择的动作
+            QAction* action = menu.exec(m_treeView->viewport()->mapToGlobal(pos));
+            
+            if (action == openAction) {
+                if (isDir) {
+                    setRootPath(filePath);
+                } else {
+                    QDesktopServices::openUrl(QUrl::fromLocalFile(filePath));
+                }
+            }
+            else if (action == copyAction) {
+                copySelectedFiles();
+            }
+            else if (action == pasteAction) {
+                pasteFiles();
+            }
+            else if (action == deleteAction) {
+                deleteSelectedFiles();
+            }
+            else if (action == propertiesAction) {
+                showProperties(filePath);
+            }
+            else if (action == newFolderAction) {
+                createNewFolder(currentPath);
+            }
+            else if (action == newTextFileAction) {
+                createNewFile(currentPath);
+            }
+        } else {
+            // 如果在空白处右击，只显示新建和粘贴
+            QAction* pasteAction = menu.addAction(QIcon(":/icons/icons/paste.png"), tr("粘贴"));
+            pasteAction->setEnabled(QApplication::clipboard()->mimeData()->hasUrls());
+            
+            // 显示菜单并处理选择的动作
+            QAction* action = menu.exec(m_treeView->viewport()->mapToGlobal(pos));
+            
+            if (action == newFolderAction) {
+                createNewFolder(currentPath);
+            }
+            else if (action == newTextFileAction) {
+                createNewFile(currentPath);
+            }
+            else if (action == pasteAction) {
+                pasteFiles();
             }
         }
-        else if (action == copyAction) {
-            copySelectedFiles();
-        }
-        else if (action == pasteAction) {
-            pasteFiles();
-        }
-        else if (action == deleteAction) {
-            deleteSelectedFiles();
-        }
-        else if (action == propertiesAction) {
-            showProperties(filePath);
-        }
-        else if (action == newFolderAction) {
-            createNewFolder(currentPath);
-        }
-        else if (action == newTextFileAction) {
-            createNewFile(currentPath);
-        }
-    } else {
-        // 如果在空白处右击，只显示新建和粘贴
-        QAction* pasteAction = menu.addAction(QIcon(":/icons/icons/paste.png"), tr("粘贴"));
-        pasteAction->setEnabled(QApplication::clipboard()->mimeData()->hasUrls());
-        
-        // 显示菜单并处理选择的动作
-        QAction* action = menu.exec(m_treeView->viewport()->mapToGlobal(pos));
-        
-        if (action == newFolderAction) {
-            createNewFolder(currentPath);
-        }
-        else if (action == newTextFileAction) {
-            createNewFile(currentPath);
-        }
-        else if (action == pasteAction) {
-            pasteFiles();
-        }
     }
+    
+    
 }
 
 void FileTabPage::copySelectedFiles()
