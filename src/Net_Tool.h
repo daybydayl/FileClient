@@ -91,7 +91,7 @@ public:
 
     // 设置错误回调
     void setErrorCallback(std::function<void(const std::string&)> callback) {
-        errorCallback = callback;
+        m_errorCallback = callback;
     }
 
 private:
@@ -140,12 +140,12 @@ public:
         std::function<void(const transfer::TransferProgressResponse&)> progressCallback;
     };
 
-    socket_t sock;
-    bool isConnected;
-    std::mutex sockMutex;
-    std::mutex tasksMutex;
-    std::map<std::string, std::shared_ptr<TransferTask>> transferTasks;
-    std::function<void(const std::string&)> errorCallback;
+    socket_t m_sock;
+    bool m_isConnected;
+    std::mutex m_sockMutex;
+    std::mutex m_tasksMutex;
+    std::map<std::string, std::shared_ptr<TransferTask>> m_transferTasks;
+    std::function<void(const std::string&)> m_errorCallback;
 
     // 生成唯一的任务ID
     std::string generateTaskId();

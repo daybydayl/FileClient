@@ -50,6 +50,8 @@ set(SOURCES
     src/ProgressWidget.cpp
     src/Net_Tool.cpp
     src/RemoteFileSystemModel.cpp
+    src/FileTabPage.cpp
+    src/LocalFileSystemModel.cpp
 )
 
 # 添加头文件
@@ -61,6 +63,9 @@ set(HEADERS
     src/ProgressWidget.h
     src/Net_Tool.h
     src/RemoteFileSystemModel.h
+    src/FileTabPage.h
+    src/LocalFileSystemModel.h
+    src/CommHead.h
 )
 
 # 收集源文件

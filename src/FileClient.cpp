@@ -1,24 +1,4 @@
 #include "FileClient.h"
-#include <QMessageBox>
-#include <QShortcut>
-#include <QKeySequence>
-#include <QDialogButtonBox>
-#include <QVBoxLayout>
-#include <QLabel>
-#include "AddressBar.h"
-#include "FileListView.h"
-#include "LogWidget.h"
-#include "ProgressWidget.h"
-#include "TaskManagerDialog.h"
-#include "ConfigDialog.h"
-#include "TransferHistoryDialog.h"
-#include "HelpDialog.h"
-#include "ThemeManager.h"
-#include "AnimationHelper.h"
-#include "NotificationWidget.h"
-#include <windows.h>
-#include <QGuiApplication>
-#include <QScreen>
 
 Net_Tool* FileClient::m_netTool = Net_Tool::getInstance();
 
@@ -277,11 +257,6 @@ void FileClient::initCentralWidget()
     connect(m_remoteView, &FileListView::remoteTabClosed, this, &FileClient::handleRemoteTabClosed);
 }
 
-void FileClient::handleNetworkError(const QString& error)
-{
-    m_logWidget->appendLog(error, true);
-}
-
 void FileClient::handleConnect()
 {
     // 从地址栏获取服务器地址和端口
@@ -303,6 +278,7 @@ void FileClient::handleConnect()
         request.set_dir_name("");
         request.set_is_parent(false);
         
+        //同步，等服务端响应
         transfer::DirectoryResponse response = m_netTool->sendDirectoryRequest(request);
 
         // 设置错误回调
@@ -355,13 +331,19 @@ void FileClient::handleUpload()
     }
     
     for (const QModelIndex& index : selectedIndexes) {
-        QString filePath = m_localView->filePath(index);
-        QString targetPath = m_remoteView->rootPath();
+        std::string filePath = m_localView->filePath(index).toStdString();
+        // 处理返回上级目录的请求：查找最后一个路径分隔符，截取前面部分
+        size_t pos = filePath.find_last_of("/\\");
+        if (pos != std::string::npos) 
+        {
+            filePath = filePath.substr(pos+1, std::string::npos);
+        }
+        std::string targetPath = m_remoteView->rootPath().toStdString();
         
         // 开始上传任务
         m_netTool->startUploadTask(
-            filePath.toStdString(),
-            targetPath.toStdString(),
+            filePath,
+            targetPath,
             [this](const transfer::TransferProgressResponse& progress) {
                 // 更新进度
                 m_progressWidget->updateProgress(
@@ -377,7 +359,7 @@ void FileClient::handleUpload()
             }
         );
         
-        m_logWidget->appendLog(tr("开始上传: %1").arg(filePath));
+        m_logWidget->appendLog(tr("开始上传: %1").arg(QString(filePath.c_str())));
     }
 }
 

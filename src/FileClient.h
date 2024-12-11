@@ -7,26 +7,24 @@
 #include <QStatusBar>
 #include <QVBoxLayout>
 #include <QSplitter>
-#include <QPushButton>
-#include "TransferHistory.h"
+#include <QShortcut>
+#include <QLabel>
+#include <QDialogButtonBox>
+#include <QGuiApplication>
+#include <QScreen>
+#include <QApplication>
+
 #include "Net_Tool.h"
-#include "../protos/transfer.pb.h"
+#include "AddressBar.h"
+#include "FileListView.h"
+#include "LogWidget.h"
+#include "ProgressWidget.h"
+#include "TaskManagerDialog.h"
+#include "ConfigDialog.h"
+#include "TransferHistoryDialog.h"
+#include "HelpDialog.h"
+#include "ThemeManager.h"
 
-// 前向声明
-class AddressBar;
-class FileListView;
-class LogWidget;
-class ProgressWidget;
-
-/**
- * @brief 文件传输客户端的主窗口类
- * 
- * 负责:
- * 1. 创建和管理主界面布局(菜单栏、工具栏、地址栏、文件视图等)
- * 2. 处理文件传输相关操作(连接、断开、上传、下载等)
- * 3. 管理窗口状态(置顶、主题等)
- * 4. 提供各种对话框功能(设置、历史记录、帮助等)
- */
 class FileClient : public QMainWindow
 {
     Q_OBJECT
@@ -48,7 +46,6 @@ private slots:
     void handleDisconnect();    // 处理断开连接
     void handleUpload();        // 处理上传
     void handleDownload();      // 处理下载
-    void handleNetworkError(const QString& error); // 处理网络错误
     void showTaskManager();     // 显示任务管理器
     void showConfig();          // 显示配置对话框
     void showHistory();         // 显示历史记录

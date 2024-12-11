@@ -4,8 +4,13 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QTextEdit>
-#include <QDateTime>
+#include <QTextCharFormat>
+#include <QTextCursor>
 #include <QScrollBar>
+#include <QTime>
+
+// 前向声明
+class QTextEdit;
 
 /**
  * @brief 日志显示组件

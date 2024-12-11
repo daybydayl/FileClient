@@ -27,12 +27,12 @@ static void make_crc32_table() {
 }
 
 // 构造函数：初始化网络环境
-Net_Tool::Net_Tool() : sock(INVALID_SOCK), isConnected(false) {
+Net_Tool::Net_Tool() : m_sock(INVALID_SOCK), m_isConnected(false) {
 #ifdef _WIN32
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-        if (errorCallback) {
-            errorCallback("Failed to initialize Winsock");
+        if (m_errorCallback) {
+            m_errorCallback("Failed to initialize Winsock");
         }
     }
 #endif
@@ -46,29 +46,29 @@ Net_Tool::~Net_Tool() {
 #endif
 
     // 清理所有传输任务
-    std::lock_guard<std::mutex> lock(tasksMutex);
-    for (auto& task : transferTasks) {
+    std::lock_guard<std::mutex> lock(m_tasksMutex);
+    for (auto& task : m_transferTasks) {
         task.second->isCancelled = true;
         if (task.second->transferThread.joinable()) {
             task.second->transferThread.join();
         }
     }
-    transferTasks.clear();
+    m_transferTasks.clear();
 }
 
 // 连接到指定服务器
 bool Net_Tool::connectToServer(const std::string& serverIP, uint16_t port) {
-    std::lock_guard<std::mutex> lock(sockMutex);
+    std::lock_guard<std::mutex> lock(m_sockMutex);
     
-    if (isConnected) {
+    if (m_isConnected) {
         disconnect();
     }
 
     // 创建socket
-    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (sock == INVALID_SOCK) {
-        if (errorCallback) {
-            errorCallback("Failed to create socket");
+    m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (m_sock == INVALID_SOCK) {
+        if (m_errorCallback) {
+            m_errorCallback("Failed to create socket");
         }
         return false;
     }
@@ -76,10 +76,10 @@ bool Net_Tool::connectToServer(const std::string& serverIP, uint16_t port) {
     //linux和window下非阻塞设置不一样
 // #ifdef _WIN32
 //     u_long iMode = 1;
-//     ioctlsocket(sock, FIONBIO, &iMode);
+//     ioctlsocket(m_sock, FIONBIO, &iMode);
 // #else
-//     int flags = fcntl(sock, F_GETFL, 0);
-//     fcntl(sock, F_SETFL, flags | O_NONBLOCK);
+//     int flags = fcntl(m_sock, F_GETFL, 0);
+//     fcntl(m_sock, F_SETFL, flags | O_NONBLOCK);
 // #endif
 
     // 设置服务器地址
@@ -87,46 +87,46 @@ bool Net_Tool::connectToServer(const std::string& serverIP, uint16_t port) {
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(port);
     if (inet_pton(AF_INET, serverIP.c_str(), &serverAddr.sin_addr) != 1) {
-        if (errorCallback) {
-            errorCallback("Invalid IP address");
+        if (m_errorCallback) {
+            m_errorCallback("Invalid IP address");
         }
-        CLOSE_SOCKET(sock);
+        CLOSE_SOCKET(m_sock);
         return false;
     }
 
     // 连接服务器
-    if (connect(sock, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCK_ERROR) {
-        if (errorCallback) {
+    if (connect(m_sock, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCK_ERROR) {
+        if (m_errorCallback) {
 #ifdef _WIN32
-            errorCallback("Failed to connect to server");
+            m_errorCallback("Failed to connect to server");
 #else
-            errorCallback(std::string("Failed to connect to server: ") + strerror(errno));
+            m_errorCallback(std::string("Failed to connect to server: ") + strerror(errno));
 #endif
         }
-        CLOSE_SOCKET(sock);
+        CLOSE_SOCKET(m_sock);
         return false;
     }
 
-    isConnected = true;
+    m_isConnected = true;
     return true;
 }
 
 // 断开服务器连接
 void Net_Tool::disconnect() {
-    std::lock_guard<std::mutex> lock(sockMutex);
-    if (sock != INVALID_SOCK) {
-        CLOSE_SOCKET(sock);
-        sock = INVALID_SOCK;
+    std::lock_guard<std::mutex> lock(m_sockMutex);
+    if (m_sock != INVALID_SOCK) {
+        CLOSE_SOCKET(m_sock);
+        m_sock = INVALID_SOCK;
     }
-    isConnected = false;
+    m_isConnected = false;
 }
 
 // 发送数据的底层实现
 bool Net_Tool::sendData(const void* data, size_t length) {
-    std::lock_guard<std::mutex> lock(sockMutex);
-    if (!isConnected) {
-        if (errorCallback) {
-            errorCallback("Not connected to server");
+    std::lock_guard<std::mutex> lock(m_sockMutex);
+    if (!m_isConnected) {
+        if (m_errorCallback) {
+            m_errorCallback("Not connected to server");
         }
         return false;
     }
@@ -135,17 +135,17 @@ bool Net_Tool::sendData(const void* data, size_t length) {
     size_t totalSent = 0;
     while (totalSent < length) {
 #ifdef _WIN32
-        int sent = send(sock, buffer + totalSent, static_cast<int>(length - totalSent), 0);
+        int sent = send(m_sock, buffer + totalSent, static_cast<int>(length - totalSent), 0);
         if (sent == SOCK_ERROR) {
 #else
-        ssize_t sent = send(sock, buffer + totalSent, length - totalSent, 0);
+        ssize_t sent = send(m_sock, buffer + totalSent, length - totalSent, 0);
         if (sent < 0) {
 #endif
-            if (errorCallback) {
+            if (m_errorCallback) {
 #ifdef _WIN32
-                errorCallback("Failed to send data");
+                m_errorCallback("Failed to send data");
 #else
-                errorCallback(std::string("Failed to send data: ") + strerror(errno));
+                m_errorCallback(std::string("Failed to send data: ") + strerror(errno));
 #endif
             }
             return false;
@@ -157,10 +157,10 @@ bool Net_Tool::sendData(const void* data, size_t length) {
 
 // 接收数据的底层实现
 bool Net_Tool::receiveData(void* buffer, size_t length) {
-    std::lock_guard<std::mutex> lock(sockMutex);
-    if (!isConnected) {
-        if (errorCallback) {
-            errorCallback("Not connected to server");
+    std::lock_guard<std::mutex> lock(m_sockMutex);
+    if (!m_isConnected) {
+        if (m_errorCallback) {
+            m_errorCallback("Not connected to server");
         }
         return false;
     }
@@ -169,10 +169,10 @@ bool Net_Tool::receiveData(void* buffer, size_t length) {
     char* buf = static_cast<char*>(buffer);
     size_t totalReceived = 0;
     while (totalReceived < length) {
-        int received = recv(sock, buf + totalReceived, static_cast<int>(length - totalReceived), 0);
+        int received = recv(m_sock, buf + totalReceived, static_cast<int>(length - totalReceived), 0);
         if (received <= 0) {
-            if (errorCallback) {
-                errorCallback("Failed to receive data");
+            if (m_errorCallback) {
+                m_errorCallback("Failed to receive data");
             }
             return false;
         }
@@ -186,8 +186,8 @@ bool Net_Tool::sendMessage(const T& message, char type) {
     // 直接序列化消息并发送
     std::string serialized;
     if (!message.SerializeToString(&serialized)) {
-        if (errorCallback) {
-            errorCallback("Failed to serialize message");
+        if (m_errorCallback) {
+            m_errorCallback("Failed to serialize message");
         }
         return false;
     }
@@ -252,8 +252,8 @@ bool Net_Tool::receiveMessage(T& message, char type) {
 
     // 反序列化消息
     if (!message.ParseFromString(serialized)) {
-        if (errorCallback) {
-            errorCallback("Failed to parse message");
+        if (m_errorCallback) {
+            m_errorCallback("Failed to parse message");
         }
         return false;
     }
@@ -264,7 +264,7 @@ bool Net_Tool::receiveMessage(T& message, char type) {
 int Net_Tool::peek_read(char *buf, int len) {
 #ifndef _WIN32
     // 使用临时缓冲区进行MSG_PEEK
-    ret = recv(sock, peek_buf, sizeof(peek_buf), MSG_PEEK);
+    ret = recv(m_sock, peek_buf, sizeof(peek_buf), MSG_PEEK);
     if(-1 == ret)
     {
         perror("readLine error -1");
@@ -272,7 +272,7 @@ int Net_Tool::peek_read(char *buf, int len) {
     }
     return ret;
 #else
-    int ret = recv(sock, buf, len, MSG_PEEK);
+    int ret = recv(m_sock, buf, len, MSG_PEEK);
     if (ret == SOCKET_ERROR) {
             int errorCode = WSAGetLastError();
             if (errorCode != WSAEINTR) {
@@ -287,8 +287,8 @@ int Net_Tool::peek_read(char *buf, int len) {
 transfer::DirectoryResponse Net_Tool::sendDirectoryRequest(const transfer::DirectoryRequest& request) {
     transfer::DirectoryResponse response;
     if (!sendMessage(request, DIRECTORY_TYPE) || !receiveMessage(response, DIRECTORY_TYPE)) {
-        if (errorCallback) {
-            errorCallback("Failed to send directory request");
+        if (m_errorCallback) {
+            m_errorCallback("Failed to send directory request");
         }
     }
     return response;
@@ -440,24 +440,24 @@ transfer::TransferProgressRequest Net_Tool::createTransferProgressRequest(const 
 
 void Net_Tool::startUploadTask(const std::string& filePath, const std::string& targetPath,
     std::function<void(const transfer::TransferProgressResponse&)> progressCallback) {
+    std::string taskId = generateTaskId();
+    
     auto task = std::make_shared<TransferTask>();
-    task->taskId = generateTaskId();
+    task->taskId = taskId;
     task->filePath = filePath;
     task->targetPath = targetPath;
     task->progressCallback = progressCallback;
-    task->isPaused = false;
-    task->isCancelled = false;
-
+    
     {
-        std::lock_guard<std::mutex> lock(tasksMutex);
-        transferTasks[task->taskId] = task;
+        std::lock_guard<std::mutex> lock(m_tasksMutex);
+        m_transferTasks[taskId] = task;
     }
 
     task->transferThread = std::thread([this, task]() {
         std::ifstream file(task->filePath, std::ios::binary | std::ios::ate);
         if (!file) {
-            if (errorCallback) {
-                errorCallback("Failed to open file: " + task->filePath);
+            if (m_errorCallback) {
+                m_errorCallback("Failed to open file: " + task->filePath);
             }
             return;
         }
@@ -468,8 +468,8 @@ void Net_Tool::startUploadTask(const std::string& filePath, const std::string& t
         // 创建并发送上传请求
         auto request = createUploadRequest(task->filePath, task->targetPath);
         if (!sendMessage(request, UPLOAD_TYPE)) {
-            if (errorCallback) {
-                errorCallback("Failed to send upload request");
+            if (m_errorCallback) {
+                m_errorCallback("Failed to send upload request");
             }
             return;
         }
@@ -477,8 +477,8 @@ void Net_Tool::startUploadTask(const std::string& filePath, const std::string& t
         // 接收上传响应
         transfer::UploadResponse response;
         if (!receiveMessage(response, UPLOAD_TYPE)) {
-            if (errorCallback) {
-                errorCallback("Failed to receive upload response");
+            if (m_errorCallback) {
+                m_errorCallback("Failed to receive upload response");
             }
             return;
         }
@@ -501,8 +501,8 @@ void Net_Tool::startUploadTask(const std::string& filePath, const std::string& t
 
             // 发送数据块
             if (!sendData(buffer.data(), bytesRead)) {
-                if (errorCallback) {
-                    errorCallback("Failed to send file data");
+                if (m_errorCallback) {
+                    m_errorCallback("Failed to send file data");
                 }
                 break;
             }
@@ -523,8 +523,8 @@ void Net_Tool::startUploadTask(const std::string& filePath, const std::string& t
         }
 
         // 完成或取消后清理任务
-        std::lock_guard<std::mutex> lock(tasksMutex);
-        transferTasks.erase(task->taskId);
+        std::lock_guard<std::mutex> lock(m_tasksMutex);
+        m_transferTasks.erase(task->taskId);
     });
 }
 
@@ -539,16 +539,16 @@ void Net_Tool::startDownloadTask(const std::string& fileName, const std::string&
     task->isCancelled = false;
 
     {
-        std::lock_guard<std::mutex> lock(tasksMutex);
-        transferTasks[task->taskId] = task;
+        std::lock_guard<std::mutex> lock(m_tasksMutex);
+        m_transferTasks[task->taskId] = task;
     }
 
     task->transferThread = std::thread([this, task]() {
         // 创建并发送下载请求
         auto request = createDownloadRequest(task->filePath, task->targetPath);
         if (!sendMessage(request, DOWNLOAD_TYPE)) {
-            if (errorCallback) {
-                errorCallback("Failed to send download request");
+            if (m_errorCallback) {
+                m_errorCallback("Failed to send download request");
             }
             return;
         }
@@ -556,15 +556,15 @@ void Net_Tool::startDownloadTask(const std::string& fileName, const std::string&
         // 接收下载响应
         transfer::DownloadResponse response;
         if (!receiveMessage(response, DOWNLOAD_TYPE)) {
-            if (errorCallback) {
-                errorCallback("Failed to receive download response");
+            if (m_errorCallback) {
+                m_errorCallback("Failed to receive download response");
             }
             return;
         }
 
         if (response.results().empty() || !response.results(0).exists()) {
-            if (errorCallback) {
-                errorCallback("File not found on server");
+            if (m_errorCallback) {
+                m_errorCallback("File not found on server");
             }
             return;
         }
@@ -572,8 +572,8 @@ void Net_Tool::startDownloadTask(const std::string& fileName, const std::string&
         // 创建输出文件
         std::ofstream file(task->targetPath, std::ios::binary);
         if (!file) {
-            if (errorCallback) {
-                errorCallback("Failed to create output file: " + task->targetPath);
+            if (m_errorCallback) {
+                m_errorCallback("Failed to create output file: " + task->targetPath);
             }
             return;
         }
@@ -591,8 +591,8 @@ void Net_Tool::startDownloadTask(const std::string& fileName, const std::string&
 
             // 接收数据块
             if (!receiveData(buffer.data(), buffer.size())) {
-                if (errorCallback) {
-                    errorCallback("Failed to receive file data");
+                if (m_errorCallback) {
+                    m_errorCallback("Failed to receive file data");
                 }
                 break;
             }
@@ -617,46 +617,46 @@ void Net_Tool::startDownloadTask(const std::string& fileName, const std::string&
         // 验证MD5
         std::string downloadedMD5 = calculateFileMD5(task->targetPath);
         if (downloadedMD5 != fileResult.md5()) {
-            if (errorCallback) {
-                errorCallback("MD5 verification failed");
+            if (m_errorCallback) {
+                m_errorCallback("MD5 verification failed");
             }
             // 删除损坏的文件
             std::remove(task->targetPath.c_str());
         }
 
         // 完成或取消后清理任务
-        std::lock_guard<std::mutex> lock(tasksMutex);
-        transferTasks.erase(task->taskId);
+        std::lock_guard<std::mutex> lock(m_tasksMutex);
+        m_transferTasks.erase(task->taskId);
     });
 }
 
 // 暂停传输任务
 void Net_Tool::pauseTransfer(const std::string& taskId) {
-    std::lock_guard<std::mutex> lock(tasksMutex);
-    auto it = transferTasks.find(taskId);
-    if (it != transferTasks.end()) {
+    std::lock_guard<std::mutex> lock(m_tasksMutex);
+    auto it = m_transferTasks.find(taskId);
+    if (it != m_transferTasks.end()) {
         it->second->isPaused = true;
     }
 }
 
 // 恢复传输任务
 void Net_Tool::resumeTransfer(const std::string& taskId) {
-    std::lock_guard<std::mutex> lock(tasksMutex);
-    auto it = transferTasks.find(taskId);
-    if (it != transferTasks.end()) {
+    std::lock_guard<std::mutex> lock(m_tasksMutex);
+    auto it = m_transferTasks.find(taskId);
+    if (it != m_transferTasks.end()) {
         it->second->isPaused = false;
     }
 }
 
 // 取消传输任务
 void Net_Tool::cancelTransfer(const std::string& taskId) {
-    std::lock_guard<std::mutex> lock(tasksMutex);
-    auto it = transferTasks.find(taskId);
-    if (it != transferTasks.end()) {
+    std::lock_guard<std::mutex> lock(m_tasksMutex);
+    auto it = m_transferTasks.find(taskId);
+    if (it != m_transferTasks.end()) {
         it->second->isCancelled = true;
         if (it->second->transferThread.joinable()) {
             it->second->transferThread.join();
         }
-        transferTasks.erase(it);
+        m_transferTasks.erase(it);
     }
 }

@@ -3,38 +3,15 @@
 
 #include <QWidget>
 #include <QVBoxLayout>
-#include <QTreeView>
-#include <QFileSystemModel>
-#include <QFileIconProvider>
-#include <QLabel>
 #include <QTabWidget>
-#include <QPushButton>
 #include <QTimer>
-#include <QSplitter>
-#include <QTreeWidget>
-#include <QTextEdit>
-#include "RemoteFileSystemModel.h"
-#include "protos/transfer.pb.h"
-#include "FileClient.h"
-/**
- * @brief 中文文件系统模型类
- * 
- * 负责:
- * 1. 继承并扩展Qt的文件系统模型
- * 2. 提供中文本地化的文件信息显示
- * 3. 自定义文件属性的显示格式
- * 4. 处理特殊文件类型的图标显示
- */
-class ChineseFileSystemModel : public QFileSystemModel
-{
-    Q_OBJECT
-    
-public:
-    explicit ChineseFileSystemModel(QObject* parent = nullptr);
-    
-    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-};
+#include <QTabBar>
+
+#include "FileTabPage.h"
+
+// 前向声明
+class FileClient;
+
 /**
  * @brief 文件列表视图组件
  * 
@@ -115,64 +92,5 @@ private:
     QPushButton* m_addTabButton; // 添加标签页按钮
 };
 
-/**
- * @brief 单个文件标签页的内容组件
- */
-class FileTabPage : public QWidget
-{
-    Q_OBJECT
-    
-public:
-    // 构造函数,创建文件标签页
-    explicit FileTabPage(QWidget* parent = nullptr, bool isRemote = false);
-    // 设置标签页的根目录路径
-    void setRootPath(const QString& path);
-    // 获取当前根目录路径
-    QString rootPath() const;
-    // 获取树形视图控件
-    QTreeView* treeView() const { return m_treeView; }
-    // 获取当前使用的数据模型(本地/远程)
-    QAbstractItemModel* model() const { return m_isRemote ? static_cast<QAbstractItemModel*>(m_remoteModel) 
-                                                        : static_cast<QAbstractItemModel*>(m_model); }
-    // 判断是否为远程标签页                                                    
-    bool isRemote() const { return m_isRemote; }
-    // 获取本地文件系统模型
-    ChineseFileSystemModel* fileSystemModel() const { return m_model; }
-    
-    // 获取指定索引的文件路径
-    QString filePath(const QModelIndex& index) const;
-
-private slots:
-    // 显示右键菜单
-    void showContextMenu(const QPoint& pos);
-    // 配置变更时更新视图
-    void onConfigChanged();
-    
-private:
-    // 复制选中的文件
-    void copySelectedFiles();
-    // 粘贴文件
-    void pasteFiles();
-    // 显示文件属性对话框
-    void showProperties(const QString& filePath);
-    // 格式化文件大小显示
-    QString formatFileSize(qint64 size);
-    // 更新隐藏文件的过滤设置
-    void updateHiddenFilesFilter();
-    // 删除选中的文件
-    void deleteSelectedFiles();
-    // 在指定路径创建新文件夹
-    void createNewFolder(const QString& parentPath);
-    // 在指定路径创建新文件
-    void createNewFile(const QString& parentPath);
-    // 格式化时间显示
-    QString formatTime(qint64 milliseconds);
-
-    QVBoxLayout* m_layout;              // 主布局
-    QTreeView* m_treeView;             // 树形视图控件
-    ChineseFileSystemModel* m_model;    // 本地文件系统模型
-    RemoteFileSystemModel* m_remoteModel; // 远程文件系统模型
-    bool m_isRemote;                    // 是否为远程标签页
-};
 
 #endif // FILELISTVIEW_H 

@@ -1,10 +1,7 @@
 #ifndef REMOTEFILESYSTEMMODEL_H
 #define REMOTEFILESYSTEMMODEL_H
 
-#include <QAbstractItemModel>
-#include <QDateTime>
-#include <QVector>
-#include "protos/transfer.pb.h"
+#include "CommHead.h"
 
 struct RemoteFileInfo {
     QString name;
