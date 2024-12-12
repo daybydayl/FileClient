@@ -55,6 +55,14 @@ public:
     // 获取指定索引的文件路径
     QString filePath(const QModelIndex& index) const;
 
+    bool containsDirectory(const QModelIndexList& indexes) const;
+    void handleUploadFiles(const QModelIndexList& indexes, const QString& targetPath);
+    void handleDownloadFiles(const QModelIndexList& indexes, const QString& targetPath);
+
+signals:
+    void transferProgressUpdated(const QString& taskId, int progress, 
+        qint64 transferredSize, qint64 totalSize);
+
 private slots:
     // 显示右键菜单
     void showContextMenu(const QPoint& pos);
@@ -86,6 +94,8 @@ private:
     LocalFileSystemModel* m_model;    // 本地文件系统模型
     RemoteFileSystemModel* m_remoteModel; // 远程文件系统模型
     bool m_isRemote;                    // 是否为远程标签页
+
+    void onTransferProgress(const transfer::TransferProgressResponse& progress);
 };
 
 #endif // FILETABPAGE_H 

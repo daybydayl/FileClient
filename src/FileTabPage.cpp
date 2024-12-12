@@ -271,8 +271,9 @@ void FileTabPage::showContextMenu(const QPoint& pos)
                     
                     if (action == downloadAction) 
                     {
-                        // TODO: 发送下载请求到服务器
-                        //emit downloadFile(fileInfo.path);
+                        QModelIndexList indexes = m_treeView->selectionModel()->selectedIndexes();
+                        QString localPath = FileClient::instance()->getLocalView()->rootPath();
+                        handleDownloadFiles(indexes, localPath);
                     }
                     else if (action == propertiesAction) 
                     {
@@ -574,4 +575,95 @@ void FileTabPage::createNewFile(const QString& parentPath)
     } else {
         QMessageBox::critical(this, tr("错误"), tr("无法创建文件"));
     }
+}
+
+// 添加新的成员函数用于检查是否包含目录
+bool FileTabPage::containsDirectory(const QModelIndexList& indexes) const
+{
+    for (const QModelIndex& index : indexes) {
+        if (index.column() == 0) { // 只检查第一列
+            if (m_isRemote) {
+                auto* model = qobject_cast<RemoteFileSystemModel*>(m_remoteModel);
+                const RemoteFileInfo& fileInfo = model->fileInfo(index);
+                if (fileInfo.isDirectory) {
+                    return true;
+                }
+            } else {
+                QString filePath = m_model->filePath(index);
+                QFileInfo fileInfo(filePath);
+                if (fileInfo.isDir()) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+// 添加上传文件的处理函数
+void FileTabPage::handleUploadFiles(const QModelIndexList& indexes, const QString& targetPath)
+{
+    // 检查是否包含目录
+    if (containsDirectory(indexes)) {
+        QMessageBox::warning(this, tr("上传提示"), 
+            tr("选中的文件中包含目录，本次不进行上传操作。"));
+        return;
+    }
+
+    // 遍历选中的文件进行上传
+    for (const QModelIndex& index : indexes) {
+        if (index.column() == 0) { // 只处理第一列
+            QString sourcePathFileName = m_model->filePath(index);
+            QString fileName = QFileInfo(sourcePathFileName).fileName();
+            QString fullTargetPath = targetPath;
+            
+            // 调用Net_Tool开始上传任务
+            FileClient::m_netTool->startUploadTask(
+                sourcePathFileName.toStdString(),
+                fullTargetPath.toStdString(),
+                std::bind(&FileTabPage::onTransferProgress, this, 
+                    std::placeholders::_1)
+            );
+        }
+    }
+}
+
+// 添加下载文件的处理函数
+void FileTabPage::handleDownloadFiles(const QModelIndexList& indexes, const QString& targetPath)
+{
+    // 检查是否包含目录
+    if (containsDirectory(indexes)) {
+        QMessageBox::warning(this, tr("下载提示"), 
+            tr("选中的文件中包含目录，本次不进行下载操作。"));
+        return;
+    }
+
+    // 遍历选中的文件进行下载
+    for (const QModelIndex& index : indexes) {
+        if (index.column() == 0) { // 只处理第一列
+            auto* model = qobject_cast<RemoteFileSystemModel*>(m_remoteModel);
+            const RemoteFileInfo& fileInfo = model->fileInfo(index);
+            QString fullTargetPath = targetPath + "/" + fileInfo.name;
+
+            // 调用Net_Tool开始下载任务
+            FileClient::m_netTool->startDownloadTask(
+                fileInfo.path.toStdString(),
+                fullTargetPath.toStdString(),
+                std::bind(&FileTabPage::onTransferProgress, this, 
+                    std::placeholders::_1)
+            );
+        }
+    }
+}
+
+// 传输进度回调函数
+void FileTabPage::onTransferProgress(const transfer::TransferProgressResponse& progress)
+{
+    // 这里可以发送信号给进度窗口更新进度
+    emit transferProgressUpdated(
+        QString::fromStdString(progress.task_id()),
+        progress.progress(),
+        progress.transferred_size(),
+        progress.total_size()
+    );
 } 

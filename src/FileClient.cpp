@@ -324,77 +324,76 @@ void FileClient::handleDisconnect()
 
 void FileClient::handleUpload()
 {
+    // 获取本地视图当前选中的文件
     QModelIndexList selectedIndexes = m_localView->selectedIndexes();
     if (selectedIndexes.isEmpty()) {
         m_logWidget->appendLog(tr("请选择要上传的文件"), true);
         return;
     }
-    
-    for (const QModelIndex& index : selectedIndexes) {
-        std::string filePath = m_localView->filePath(index).toStdString();
-        // 处理返回上级目录的请求：查找最后一个路径分隔符，截取前面部分
-        size_t pos = filePath.find_last_of("/\\");
-        if (pos != std::string::npos) 
-        {
-            filePath = filePath.substr(pos+1, std::string::npos);
-        }
-        std::string targetPath = m_remoteView->rootPath().toStdString();
-        
-        // 开始上传任务
-        m_netTool->startUploadTask(
-            filePath,
-            targetPath,
-            [this](const transfer::TransferProgressResponse& progress) {
-                // 更新进度
-                m_progressWidget->updateProgress(
-                    QString::fromStdString(progress.task_id()),
-                    progress.progress(),
-                    progress.transferred_size(),
-                    progress.total_size()
-                );
-                
-                if (progress.progress() == 100) {
-                    m_logWidget->appendLog(tr("文件上传完成"));
-                }
-            }
-        );
-        
-        m_logWidget->appendLog(tr("开始上传: %1").arg(QString(filePath.c_str())));
+
+    // 获取远程视图当前路径
+    QString remotePath = m_remoteView->rootPath();
+    if (remotePath.isEmpty()) {
+        m_logWidget->appendLog(tr("请先连接到远程服务器"), true);
+        return;
+    }
+
+    // 获取当前本地标签页
+    FileTabPage* localPage = qobject_cast<FileTabPage*>(m_localView->currentWidget());
+    if (localPage) {
+        localPage->handleUploadFiles(selectedIndexes, remotePath);
     }
 }
 
 void FileClient::handleDownload()
 {
+    // 获取远程视图当前选中的文件
     QModelIndexList selectedIndexes = m_remoteView->selectedIndexes();
     if (selectedIndexes.isEmpty()) {
         m_logWidget->appendLog(tr("请选择要下载的文件"), true);
         return;
     }
+
+    // 获取本地视图当前路径
+    QString localPath = m_localView->rootPath();
     
-    for (const QModelIndex& index : selectedIndexes) {
-        QString filePath = m_remoteView->filePath(index);
-        QString savePath = m_localView->rootPath() + "/" + QFileInfo(filePath).fileName();
-        
-        // 开始下载任务
-        m_netTool->startDownloadTask(
-            filePath.toStdString(),
-            savePath.toStdString(),
-            [this](const transfer::TransferProgressResponse& progress) {
-                // 更新进度
-                m_progressWidget->updateProgress(
-                    QString::fromStdString(progress.task_id()),
-                    progress.progress(),
-                    progress.transferred_size(),
-                    progress.total_size()
-                );
-                
-                if (progress.progress() == 100) {
-                    m_logWidget->appendLog(tr("文件下载完成"));
+    // 获取当前远程标签页
+    FileTabPage* remotePage = qobject_cast<FileTabPage*>(m_remoteView->currentWidget());
+    if (remotePage) {
+        remotePage->handleDownloadFiles(selectedIndexes, localPath);
+    }
+}
+
+// 处理拖放操作
+void FileClient::handleDroppedFiles(const QList<QUrl>& urls, const QString& targetPath, bool isUpload)
+{
+    QModelIndexList indexes;
+    if (isUpload) {
+        // 构建本地文件索引列表
+        FileTabPage* localPage = qobject_cast<FileTabPage*>(m_localView->currentWidget());
+        if (localPage) {
+            for (const QUrl& url : urls) {
+                QString filePath = url.toLocalFile();
+                QModelIndex index = localPage->fileSystemModel()->index(filePath);
+                if (index.isValid()) {
+                    indexes << index;
                 }
             }
-        );
-        
-        m_logWidget->appendLog(tr("开始下载: %1").arg(filePath));
+            localPage->handleUploadFiles(indexes, targetPath);
+        }
+    } else {
+        // 构建远程文件索引列表
+        FileTabPage* remotePage = qobject_cast<FileTabPage*>(m_remoteView->currentWidget());
+        if (remotePage) {
+            for (const QUrl& url : urls) {
+                QString filePath = url.path();
+                QModelIndex index = remotePage->model()->index(0, 0);
+                if (index.isValid()) {
+                    indexes << index;
+                }
+            }
+            remotePage->handleDownloadFiles(indexes, targetPath);
+        }
     }
 }
 

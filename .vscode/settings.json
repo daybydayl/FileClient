@@ -67,7 +67,8 @@
         "xstddef": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "xthread": "cpp"
     },
     "cmake.configureSettings": {
         "CMAKE_PREFIX_PATH": "D:/myinstall/Qt5.12.12/5.12.12/msvc2017_64"

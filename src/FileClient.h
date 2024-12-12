@@ -30,6 +30,17 @@ class FileClient : public QMainWindow
     Q_OBJECT
 
 public:
+    static FileClient* instance() {
+        static FileClient* instance = nullptr;
+        if (!instance) {
+            instance = new FileClient();
+        }
+        return instance;
+    }
+
+    FileListView* getLocalView() const { return m_localView; }
+    FileListView* getRemoteView() const { return m_remoteView; }
+
     explicit FileClient(QWidget *parent = nullptr);
     ~FileClient();
 
@@ -46,6 +57,7 @@ private slots:
     void handleDisconnect();    // 处理断开连接
     void handleUpload();        // 处理上传
     void handleDownload();      // 处理下载
+    void handleDroppedFiles(const QList<QUrl>& urls, const QString& targetPath, bool isUpload);// 处理拖放操作
     void showTaskManager();     // 显示任务管理器
     void showConfig();          // 显示配置对话框
     void showHistory();         // 显示历史记录

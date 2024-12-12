@@ -37,6 +37,9 @@
 #define TRANSFER_CONTROL_TYPE 4
 #define TRANSFER_PROGRESS_TYPE 5
 
+
+#define CHUNK_SIZE 1024 * 1024
+
 class Net_Tool {
 public:
     static Net_Tool* getInstance() {
@@ -55,12 +58,12 @@ public:
         const std::string& dirName, bool isParent = false);
 
     // 生成文件上传请求
-    transfer::UploadRequest createUploadRequest(const std::string& filePath, 
-        const std::string& targetPath, uint32_t chunkSize = 1024 * 1024);
+    transfer::UploadRequest createUploadRequest(const std::string& fileName, 
+        const std::string& targetPath, uint32_t chunkSize = CHUNK_SIZE);
 
     // 生成文件下载请求
     transfer::DownloadRequest createDownloadRequest(const std::string& fileName,
-        const std::string& targetPath, uint32_t chunkSize = 1024 * 1024);
+        const std::string& targetPath, uint32_t chunkSize = CHUNK_SIZE);
 
     // 生成传输控制请求
     transfer::TransferControlRequest createTransferControlRequest(const std::string& taskId,
@@ -70,7 +73,7 @@ public:
     transfer::TransferProgressRequest createTransferProgressRequest(const std::string& taskId);
 
     // 开始文件上传任务
-    void startUploadTask(const std::string& filePath, const std::string& targetPath,
+    void startUploadTask(const std::string& fileName, const std::string& targetPath,
         std::function<void(const transfer::TransferProgressResponse&)> progressCallback);
 
     // 开始文件下载任务
@@ -130,7 +133,7 @@ public:
     // 传输任务结构
     struct TransferTask {
         std::string taskId;
-        std::string filePath;
+        std::string fileName;
         std::string targetPath;
         uint64_t fileSize;
         uint64_t transferredSize;
@@ -144,9 +147,15 @@ public:
     bool m_isConnected;
     std::mutex m_sockMutex;
     std::mutex m_tasksMutex;
-    std::map<std::string, std::shared_ptr<TransferTask>> m_transferTasks;
+    std::map<std::string, TransferTask*> m_transferTasks;
     std::function<void(const std::string&)> m_errorCallback;
 
     // 生成唯一的任务ID
     std::string generateTaskId();
+
+    // 添加上传任务处理函数
+    void handleUploadTask(TransferTask* task);
+    
+    // 添加下载任务处理函数 
+    void handleDownloadTask(TransferTask* task);
 };

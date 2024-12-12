@@ -19,8 +19,7 @@ int main(int argc, char *argv[])
         app.setFont(font);
     }
     
-    FileClient w;
-    w.show();
+    FileClient::instance()->show();
     
     return app.exec();
 }

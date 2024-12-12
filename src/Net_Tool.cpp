@@ -47,11 +47,13 @@ Net_Tool::~Net_Tool() {
 
     // 清理所有传输任务
     std::lock_guard<std::mutex> lock(m_tasksMutex);
-    for (auto& task : m_transferTasks) {
-        task.second->isCancelled = true;
-        if (task.second->transferThread.joinable()) {
-            task.second->transferThread.join();
+    for (auto& pair : m_transferTasks) {
+        TransferTask* task = pair.second;
+        task->isCancelled = true;
+        if (task->transferThread.joinable()) {
+            task->transferThread.join();
         }
+        delete task;  // 释放内存
     }
     m_transferTasks.clear();
 }
@@ -183,9 +185,10 @@ bool Net_Tool::receiveData(void* buffer, size_t length) {
 
 template<typename T>
 bool Net_Tool::sendMessage(const T& message, char type) {
-    // 直接序列化消息并发送
+    // // 直接序列化消息并发送
     std::string serialized;
-    if (!message.SerializeToString(&serialized)) {
+    bool retcode = message.SerializeToString(&serialized);
+    if (!retcode) {
         if (m_errorCallback) {
             m_errorCallback("Failed to serialize message");
         }
@@ -193,14 +196,14 @@ bool Net_Tool::sendMessage(const T& message, char type) {
     }
 
     //再包个底层收发的长度和类型头
-    char* buf = new char[sizeof(int)+sizeof(char)+serialized.size()];
-    int data_len = serialized.size();
+    char* buf = new char[sizeof(uint64_t)+sizeof(char)+serialized.size()];
+    uint64_t data_len = serialized.size();
     char type_char = type;
-    memcpy((char*)buf,(char*)&data_len,sizeof(int));//序列化数据长度
-    memcpy(buf+sizeof(int),&type_char,sizeof(char));//类型
-    memcpy(buf+sizeof(int)+sizeof(char),serialized.data(),serialized.size());//序列化数据
+    memcpy((char*)buf,(char*)&data_len,sizeof(uint64_t));//序列化数据长度
+    memcpy(buf+sizeof(uint64_t),&type_char,sizeof(char));//类型
+    memcpy(buf+sizeof(uint64_t)+sizeof(char),serialized.c_str(),serialized.size());//序列化数据
 
-    sendData(buf, sizeof(int)+sizeof(char)+serialized.size());
+    sendData(buf, sizeof(uint64_t)+sizeof(char)+serialized.size());
     free(buf);
     return true;
 }
@@ -211,8 +214,8 @@ bool Net_Tool::receiveMessage(T& message, char type) {
     std::string serialized;
     char buff[65535] = {0};
     int ret=0;
-    int data_len=0;
-    int type_char=0;
+    uint64_t data_len=0;
+    char type_char=0;
     bool res = true;
 
     //先看下数据有多少，在接收
@@ -226,14 +229,14 @@ bool Net_Tool::receiveMessage(T& message, char type) {
         return false;
     }
     //解析底层收发头
-    memcpy((char*)&data_len,buff,sizeof(int));
-    memcpy((char*)&type_char,buff+sizeof(int),sizeof(char));
+    memcpy((char*)&data_len,buff,sizeof(uint64_t));
+    memcpy((char*)&type_char,buff+sizeof(uint64_t),sizeof(char));
     if(type_char != type) {
         //类型不对，返回false
         return false;
     }
     //把序列化部分数据拿到
-    serialized += std::string(buff+sizeof(int)+sizeof(char), ret-sizeof(int)-sizeof(char));
+    serialized += std::string(buff+sizeof(uint64_t)+sizeof(char), ret-sizeof(uint64_t)-sizeof(char));
 
     /*
     现在这种情况是先查看，然后全部取出
@@ -380,29 +383,39 @@ transfer::DirectoryRequest Net_Tool::createDirectoryRequest(
 
 // 创建上传请求
 transfer::UploadRequest Net_Tool::createUploadRequest(
-    const std::string& filePath, const std::string& targetPath, uint32_t chunkSize) {
+    const std::string& fileName, const std::string& targetPath, uint32_t chunkSize) {
+    
     transfer::UploadRequest request;
     request.set_allocated_header(new transfer::RequestHeader(createRequestHeader(transfer::UPLOAD)));
-
     // 获取文件信息
-    std::ifstream file(filePath, std::ios::binary | std::ios::ate);
+    std::ifstream file(fileName, std::ios::binary | std::ios::ate);
     if (!file) {
         return request;
     }
-
     auto fileSize = file.tellg();
     file.seekg(0);
 
     // 设置文件信息
     auto fileInfo = request.add_files();
-    fileInfo->set_file_name(filePath.substr(filePath.find_last_of("/\\") + 1));
-    fileInfo->set_target_path(targetPath);
-    fileInfo->set_file_size(fileSize);
-    fileInfo->set_md5(calculateFileMD5(filePath));
-    fileInfo->set_need_chunk(fileSize > chunkSize);
-    fileInfo->set_chunk_size(chunkSize);
-    fileInfo->set_task_id(generateTaskId());
-    fileInfo->set_status(transfer::INIT);
+    fileInfo->set_file_name(fileName.substr(fileName.find_last_of("/\\") + 1));//文件名
+    fileInfo->set_target_path(targetPath);//目标路径
+    fileInfo->set_file_size(fileSize);//文件大小
+    fileInfo->set_md5(calculateFileMD5(fileName));//文件MD5
+    fileInfo->set_need_chunk(fileSize > chunkSize);//是否分片
+    fileInfo->set_chunk_size(chunkSize);//分片大小
+    fileInfo->set_chunk_sequence(0);//分片序号
+    uint64_t read_size = fileSize>chunkSize?chunkSize:fileSize;
+
+    //file.seekg(read_size,std::ios::beg);//跳过已经读取的数据
+    std::vector<char> chunk_data(read_size);
+    file.read(chunk_data.data(),read_size);
+    fileInfo->set_data(chunk_data.data(),read_size);//读取数据
+
+    fileInfo->set_checksum(calculateCRC32(chunk_data.data(),read_size));//校验和，分片情况下才有用
+    fileInfo->set_task_id(generateTaskId());//任务ID
+    fileInfo->set_status(transfer::INIT);//传输状态
+    fileInfo->set_offset(0);//断点续传的起始位置
+    fileInfo->set_upload_id(generateTaskId());//上传会话ID(用于断点续传)
 
     return request;
 }
@@ -438,101 +451,36 @@ transfer::TransferProgressRequest Net_Tool::createTransferProgressRequest(const 
     return request;
 }
 
-void Net_Tool::startUploadTask(const std::string& filePath, const std::string& targetPath,
+void Net_Tool::startUploadTask(const std::string& fileName, const std::string& targetPath,
     std::function<void(const transfer::TransferProgressResponse&)> progressCallback) {
     std::string taskId = generateTaskId();
     
-    auto task = std::make_shared<TransferTask>();
+    // 使用普通指针
+    TransferTask* task = new TransferTask();
     task->taskId = taskId;
-    task->filePath = filePath;
+    task->fileName = fileName;
     task->targetPath = targetPath;
     task->progressCallback = progressCallback;
+    task->isPaused = false;
+    task->isCancelled = false;
     
     {
+        // 使用互斥锁保护对任务列表的访问
         std::lock_guard<std::mutex> lock(m_tasksMutex);
+        // 将新的传输任务添加到任务映射表中
         m_transferTasks[taskId] = task;
     }
 
-    task->transferThread = std::thread([this, task]() {
-        std::ifstream file(task->filePath, std::ios::binary | std::ios::ate);
-        if (!file) {
-            if (m_errorCallback) {
-                m_errorCallback("Failed to open file: " + task->filePath);
-            }
-            return;
-        }
-
-        task->fileSize = file.tellg();
-        file.seekg(0);
-
-        // 创建并发送上传请求
-        auto request = createUploadRequest(task->filePath, task->targetPath);
-        if (!sendMessage(request, UPLOAD_TYPE)) {
-            if (m_errorCallback) {
-                m_errorCallback("Failed to send upload request");
-            }
-            return;
-        }
-
-        // 接收上传响应
-        transfer::UploadResponse response;
-        if (!receiveMessage(response, UPLOAD_TYPE)) {
-            if (m_errorCallback) {
-                m_errorCallback("Failed to receive upload response");
-            }
-            return;
-        }
-
-        const uint32_t chunkSize = 1024 * 1024;  // 1MB chunks
-        std::vector<char> buffer(chunkSize);
-        uint64_t totalRead = 0;
-
-        while (totalRead < task->fileSize && !task->isCancelled) {
-            while (task->isPaused && !task->isCancelled) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            }
-            if (task->isCancelled) break;
-
-            auto bytesToRead = std::min(chunkSize, static_cast<uint32_t>(task->fileSize - totalRead));
-            file.read(buffer.data(), bytesToRead);
-            auto bytesRead = file.gcount();
-
-            if (bytesRead <= 0) break;
-
-            // 发送数据块
-            if (!sendData(buffer.data(), bytesRead)) {
-                if (m_errorCallback) {
-                    m_errorCallback("Failed to send file data");
-                }
-                break;
-            }
-
-            totalRead += bytesRead;
-            task->transferredSize = totalRead;
-
-            // 更新进度
-            if (task->progressCallback) {
-                transfer::TransferProgressResponse progress;
-                progress.set_task_id(task->taskId);
-                progress.set_status(transfer::TRANSFERRING);
-                progress.set_transferred_size(totalRead);
-                progress.set_total_size(task->fileSize);
-                progress.set_progress(static_cast<uint32_t>((totalRead * 100) / task->fileSize));
-                task->progressCallback(progress);
-            }
-        }
-
-        // 完成或取消后清理任务
-        std::lock_guard<std::mutex> lock(m_tasksMutex);
-        m_transferTasks.erase(task->taskId);
-    });
+    // 使用成员函数替代lambda表达式
+    task->transferThread = std::thread(&Net_Tool::handleUploadTask, this, task);
+    task->transferThread.detach();//线程分离
 }
 
 void Net_Tool::startDownloadTask(const std::string& fileName, const std::string& targetPath,
     std::function<void(const transfer::TransferProgressResponse&)> progressCallback) {
-    auto task = std::make_shared<TransferTask>();
+    TransferTask* task = new TransferTask();
     task->taskId = generateTaskId();
-    task->filePath = fileName;
+    task->fileName = fileName;
     task->targetPath = targetPath;
     task->progressCallback = progressCallback;
     task->isPaused = false;
@@ -543,91 +491,212 @@ void Net_Tool::startDownloadTask(const std::string& fileName, const std::string&
         m_transferTasks[task->taskId] = task;
     }
 
-    task->transferThread = std::thread([this, task]() {
-        // 创建并发送下载请求
-        auto request = createDownloadRequest(task->filePath, task->targetPath);
-        if (!sendMessage(request, DOWNLOAD_TYPE)) {
-            if (m_errorCallback) {
-                m_errorCallback("Failed to send download request");
-            }
-            return;
+    // 使用成员函数替代lambda表达式
+    task->transferThread = std::thread(&Net_Tool::handleDownloadTask, this, task);
+    task->transferThread.detach();//线程分离
+}
+
+// 上传任务处理函数
+void Net_Tool::handleUploadTask(TransferTask* task)
+{
+    std::ifstream file(task->fileName, std::ios::binary | std::ios::ate);
+    if (!file) {
+        if (m_errorCallback) {
+            m_errorCallback("Failed to open file: " + task->fileName);
         }
+        return;
+    }
 
-        // 接收下载响应
-        transfer::DownloadResponse response;
-        if (!receiveMessage(response, DOWNLOAD_TYPE)) {
-            if (m_errorCallback) {
-                m_errorCallback("Failed to receive download response");
-            }
-            return;
+    // 获取文件大小
+    task->fileSize = file.tellg();
+    // 将文件指针重置到开头
+    file.seekg(0);
+
+    // 创建并发送上传请求
+    auto request = createUploadRequest(task->fileName, task->targetPath);
+    if (!sendMessage(request, UPLOAD_TYPE)) {
+        if (m_errorCallback) {
+            m_errorCallback("Failed to send upload request");
         }
-
-        if (response.results().empty() || !response.results(0).exists()) {
-            if (m_errorCallback) {
-                m_errorCallback("File not found on server");
-            }
-            return;
-        }
-
-        // 创建输出文件
-        std::ofstream file(task->targetPath, std::ios::binary);
-        if (!file) {
-            if (m_errorCallback) {
-                m_errorCallback("Failed to create output file: " + task->targetPath);
-            }
-            return;
-        }
-
-        const auto& fileResult = response.results(0);
-        task->fileSize = fileResult.file_size();
-        task->transferredSize = 0;
-
-        std::vector<char> buffer(fileResult.chunk_size());
-        while (task->transferredSize < task->fileSize && !task->isCancelled) {
-            while (task->isPaused && !task->isCancelled) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            }
-            if (task->isCancelled) break;
-
-            // 接收数据块
-            if (!receiveData(buffer.data(), buffer.size())) {
-                if (m_errorCallback) {
-                    m_errorCallback("Failed to receive file data");
-                }
-                break;
-            }
-
-            file.write(buffer.data(), buffer.size());
-            task->transferredSize += buffer.size();
-
-            // 更新进度
-            if (task->progressCallback) {
-                transfer::TransferProgressResponse progress;
-                progress.set_task_id(task->taskId);
-                progress.set_status(transfer::TRANSFERRING);
-                progress.set_transferred_size(task->transferredSize);
-                progress.set_total_size(task->fileSize);
-                progress.set_progress(static_cast<uint32_t>((task->transferredSize * 100) / task->fileSize));
-                task->progressCallback(progress);
-            }
-        }
-
         file.close();
-
-        // 验证MD5
-        std::string downloadedMD5 = calculateFileMD5(task->targetPath);
-        if (downloadedMD5 != fileResult.md5()) {
+        return;
+    }
+    
+    transfer::UploadResponse response;
+    do
+    {
+        if (!receiveMessage(response, UPLOAD_TYPE)) {
             if (m_errorCallback) {
-                m_errorCallback("MD5 verification failed");
+                m_errorCallback("Failed to receive upload response");
             }
-            // 删除损坏的文件
-            std::remove(task->targetPath.c_str());
+            file.close();
+            return;
+        }
+        if(response.results().size() > 0
+        && response.header().session_id() == request.header().session_id())
+        {
+            auto fileInfo = response.results(0);
+            if(fileInfo.success() == true)
+            {//上传成功
+                int next_sequence = fileInfo.next_sequence();
+                // 更新进度
+                if (task->progressCallback) {
+                    transfer::TransferProgressResponse progress;
+                    progress.set_task_id(task->taskId);
+                    progress.set_status(next_sequence > 0 ? transfer::TRANSFERRING : transfer::COMPLETED);
+                    progress.set_transferred_size(next_sequence*CHUNK_SIZE);
+                    progress.set_total_size(task->fileSize);
+                    progress.set_progress(static_cast<uint32_t>((next_sequence * CHUNK_SIZE * 100) / task->fileSize));
+                    task->progressCallback(progress);
+                }
+                if(next_sequence > 0)
+                {//分片，还未传完
+                    //分片需要更新的参数有：分片序号、数据、校验和、传输状态、断点续传的起始位置
+                    //auto req_info = request.mutable_files(0);//可修改
+                    for (int i = 0; i < request.files_size(); ++i) 
+                    {
+                        auto req_info = request.mutable_files(i);//可修改
+                        req_info->set_chunk_sequence(next_sequence);//分片序号
+                        file.seekg(next_sequence*CHUNK_SIZE,std::ios::beg);//偏移到待取的位置
+                        uint64_t next_size = task->fileSize-next_sequence*CHUNK_SIZE;
+                        if(next_size > CHUNK_SIZE)
+                            next_size = CHUNK_SIZE;
+                        std::vector<char> chunk_data(next_size);
+                        file.read(chunk_data.data(),next_size);
+                        req_info->set_data(chunk_data.data(),next_size);//读取数据
+                        req_info->set_checksum(calculateCRC32(chunk_data.data(),next_size));//校验和
+                        req_info->set_status(transfer::TRANSFERRING);//传输状态
+                        req_info->set_offset(next_sequence*CHUNK_SIZE);//断点续传的起始位置
+                        if (!sendMessage(request, UPLOAD_TYPE)) {
+                            if (m_errorCallback) {
+                                m_errorCallback("Failed to send upload request");
+                            }
+                            file.close();
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    break;//终止while
+                }
+            }
+            else
+            {//上个没成功，重新上传
+                if (!sendMessage(request, UPLOAD_TYPE)) {
+                    if (m_errorCallback) {
+                        m_errorCallback("Failed to send upload request");
+                    }
+                    file.close();
+                    return;
+                }
+            }
+        }
+    } while (1);
+
+    file.close();
+    
+    {   // 使用花括号创建局部作用域,确保互斥锁的RAII特性,锁会在作用域结束时自动释放
+        std::lock_guard<std::mutex> lock(m_tasksMutex);  // 加锁保护共享资源m_transferTasks
+        auto it = m_transferTasks.find(task->taskId);    // 查找当前任务
+        if (it != m_transferTasks.end()) {
+            delete it->second;  // 释放任务对象占用的内存
+            m_transferTasks.erase(it);  // 从任务映射中移除该任务
+        }
+    }   // 作用域结束,锁自动释放
+}
+
+// 下载任务处理函数
+void Net_Tool::handleDownloadTask(TransferTask* task)
+{
+    // 创建并发送下载请求
+    auto request = createDownloadRequest(task->fileName, task->targetPath);
+    if (!sendMessage(request, DOWNLOAD_TYPE)) {
+        if (m_errorCallback) {
+            m_errorCallback("Failed to send download request");
+        }
+        return;
+    }
+
+    // 接收下载响应
+    transfer::DownloadResponse response;
+    if (!receiveMessage(response, DOWNLOAD_TYPE)) {
+        if (m_errorCallback) {
+            m_errorCallback("Failed to receive download response");
+        }
+        return;
+    }
+
+    if (response.results().empty() || !response.results(0).exists()) {
+        if (m_errorCallback) {
+            m_errorCallback("File not found on server");
+        }
+        return;
+    }
+
+    // 创建输出文件
+    std::ofstream file(task->targetPath, std::ios::binary);
+    if (!file) {
+        if (m_errorCallback) {
+            m_errorCallback("Failed to create output file: " + task->targetPath);
+        }
+        return;
+    }
+
+    const auto& fileResult = response.results(0);
+    task->fileSize = fileResult.file_size();
+    task->transferredSize = 0;
+
+    std::vector<char> buffer(fileResult.chunk_size());
+    while (task->transferredSize < task->fileSize && !task->isCancelled) {
+        while (task->isPaused && !task->isCancelled) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        if (task->isCancelled) break;
+
+        // 接收数据块
+        if (!receiveData(buffer.data(), buffer.size())) {
+            if (m_errorCallback) {
+                m_errorCallback("Failed to receive file data");
+            }
+            break;
         }
 
-        // 完成或取消后清理任务
+        file.write(buffer.data(), buffer.size());
+        task->transferredSize += buffer.size();
+
+        // 更新进度
+        if (task->progressCallback) {
+            transfer::TransferProgressResponse progress;
+            progress.set_task_id(task->taskId);
+            progress.set_status(transfer::TRANSFERRING);
+            progress.set_transferred_size(task->transferredSize);
+            progress.set_total_size(task->fileSize);
+            progress.set_progress(static_cast<uint32_t>((task->transferredSize * 100) / task->fileSize));
+            task->progressCallback(progress);
+        }
+    }
+
+    file.close();
+
+    // 验证MD5
+    std::string downloadedMD5 = calculateFileMD5(task->targetPath);
+    if (downloadedMD5 != fileResult.md5()) {
+        if (m_errorCallback) {
+            m_errorCallback("MD5 verification failed");
+        }
+        // 删除损坏的文件
+        std::remove(task->targetPath.c_str());
+    }
+
+    {
         std::lock_guard<std::mutex> lock(m_tasksMutex);
-        m_transferTasks.erase(task->taskId);
-    });
+        auto it = m_transferTasks.find(task->taskId);
+        if (it != m_transferTasks.end()) {
+            delete it->second;  // 释放内存
+            m_transferTasks.erase(it);
+        }
+    }
 }
 
 // 暂停传输任务
@@ -653,10 +722,12 @@ void Net_Tool::cancelTransfer(const std::string& taskId) {
     std::lock_guard<std::mutex> lock(m_tasksMutex);
     auto it = m_transferTasks.find(taskId);
     if (it != m_transferTasks.end()) {
-        it->second->isCancelled = true;
-        if (it->second->transferThread.joinable()) {
-            it->second->transferThread.join();
+        TransferTask* task = it->second;
+        task->isCancelled = true;
+        if (task->transferThread.joinable()) {
+            task->transferThread.join();
         }
+        delete task;  // 释放内存
         m_transferTasks.erase(it);
     }
 }

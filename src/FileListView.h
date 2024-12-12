@@ -56,6 +56,8 @@ public:
 
     // 判断视图是否可见                 
     bool isVisible() const { return QWidget::isVisible(); }
+    // 添加这个方法来委托给内部的m_tabWidget
+    QWidget* currentWidget() const { return m_tabWidget->currentWidget(); }
 
 public slots:
     // 关闭指定索引的标签页
