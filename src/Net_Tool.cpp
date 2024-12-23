@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iomanip>
 #include <openssl/md5.h>
+#include "FileClient.h"
 
 // CRC32表
 static uint32_t crc32_table[256];
@@ -212,7 +213,7 @@ template<typename T>
 bool Net_Tool::receiveMessage(T& message, char type) {
     // 接收序列化的消息
     std::string serialized;
-    char buff[65535] = {0};
+    char buff[65535] = {0};//一包长
     int ret=0;
     uint64_t data_len=0;
     char type_char=0;
@@ -238,20 +239,22 @@ bool Net_Tool::receiveMessage(T& message, char type) {
     //把序列化部分数据拿到
     serialized += std::string(buff+sizeof(uint64_t)+sizeof(char), ret-sizeof(uint64_t)-sizeof(char));
 
-    /*
-    现在这种情况是先查看，然后全部取出
-    */
-
-    
-    //现在是阻塞模式，查看不到数据的话也会阻塞中
-    // while((ret = peek_read(buff, sizeof(buff))) && ret > 0) {
-    //     //有可能没拿完，一般不会进入这个while
-    //     res = receiveData(buff, ret);
-    //     if(!res) {
-    //         return false;
-    //     }
-    //     serialized += std::string(buff, ret);//继续追加
-    // }
+    //一包拿不完，继续拿(整理逻辑不太好，有空再优化)
+    uint64_t total_len = ret;
+    while(data_len+sizeof(uint64_t)+sizeof(char) > total_len)
+    {
+        ret = peek_read(buff, sizeof(buff));
+        if(ret <= 0) {
+            return false;
+        }
+        //接收数据
+        res = receiveData(buff, ret);
+        if(!res) {
+            return false;
+        }
+        serialized += std::string(buff, ret);
+        total_len += ret;
+    }
 
     // 反序列化消息
     if (!message.ParseFromString(serialized)) {
@@ -577,7 +580,16 @@ void Net_Tool::handleUploadTask(TransferTask* task)
                     }
                 }
                 else
-                {
+                {//文件上传完成
+                    // 发送目录请求以刷新远端目录显示
+                    transfer::DirectoryRequest dirRequest;
+                    dirRequest.mutable_header()->set_type(transfer::DIRECTORY);
+                    dirRequest.set_current_path("");
+                    dirRequest.set_dir_name(request.files(0).target_path());
+                    dirRequest.set_is_parent(false);
+                    transfer::DirectoryResponse response = sendDirectoryRequest(dirRequest);
+                    FileClient::instance()->getRemoteView()->dispatchRemoteResponse(response);
+
                     break;//终止while
                 }
             }
@@ -607,8 +619,7 @@ void Net_Tool::handleUploadTask(TransferTask* task)
 }
 
 // 下载任务处理函数
-void Net_Tool::handleDownloadTask(TransferTask* task)
-{
+void Net_Tool::handleDownloadTask(TransferTask* task) {
     // 创建并发送下载请求
     auto request = createDownloadRequest(task->fileName, task->targetPath);
     if (!sendMessage(request, DOWNLOAD_TYPE)) {
@@ -627,6 +638,7 @@ void Net_Tool::handleDownloadTask(TransferTask* task)
         return;
     }
 
+    // 检查响应结果
     if (response.results().empty() || !response.results(0).exists()) {
         if (m_errorCallback) {
             m_errorCallback("File not found on server");
@@ -634,66 +646,176 @@ void Net_Tool::handleDownloadTask(TransferTask* task)
         return;
     }
 
+    const auto& fileInfo = response.results(0);//响应的数据
+    task->fileSize = fileInfo.file_size();
+
     // 创建输出文件
-    std::ofstream file(task->targetPath, std::ios::binary);
-    if (!file) {
-        if (m_errorCallback) {
-            m_errorCallback("Failed to create output file: " + task->targetPath);
+    std::string target_file = fileInfo.target_path() + "/" + fileInfo.file_name();
+
+    if(fileInfo.need_chunk())
+    {
+        std::ofstream file(target_file,fileInfo.chunk_sequence()==0?
+                std::ios::binary | std::ios::trunc : 
+                std::ios::binary | std::ios::app);
+        if (!file) {
+                //request.files(0)->set_error_message("Failed to open file for writing");
         }
-        return;
-    }
+        uint64_t file_total_len = 0;//以获取文件数据长度
 
-    const auto& fileResult = response.results(0);
-    task->fileSize = fileResult.file_size();
-    task->transferredSize = 0;
-
-    std::vector<char> buffer(fileResult.chunk_size());
-    while (task->transferredSize < task->fileSize && !task->isCancelled) {
-        while (task->isPaused && !task->isCancelled) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
-        if (task->isCancelled) break;
-
-        // 接收数据块
-        if (!receiveData(buffer.data(), buffer.size())) {
-            if (m_errorCallback) {
-                m_errorCallback("Failed to receive file data");
+        //分片校验
+        uint32_t calculated_crc = calculateCRC32(fileInfo.data().c_str(), fileInfo.data().length());
+        if(calculated_crc == fileInfo.checksum())
+        {
+            file.seekp(file_total_len);
+            file.write(fileInfo.data().c_str(), fileInfo.data().length());
+            file_total_len += fileInfo.data().length();
+            //file.close();
+            
+            auto req_info = request.mutable_files(0);
+            req_info->set_offset(file_total_len);
+            // 更新进度回调
+            if (task->progressCallback) {
+                transfer::TransferProgressResponse progress;
+                progress.set_task_id(task->taskId);
+                progress.set_status(file_total_len < task->fileSize ? 
+                                    transfer::TRANSFERRING : transfer::COMPLETED);
+                progress.set_transferred_size(file_total_len);
+                progress.set_total_size(task->fileSize);
+                progress.set_progress(static_cast<uint32_t>((file_total_len * 100) / task->fileSize));
+                task->progressCallback(progress);
             }
-            break;
+        }
+        else
+        {
+            if (m_errorCallback) {
+                m_errorCallback("Chunk checksum verification failed");
+            }
+        }
+        
+        if (!sendMessage(request, DOWNLOAD_TYPE)) {
+        if (m_errorCallback) {
+                m_errorCallback("Failed to send download request");
+            }
+            return;
+        }
+        do
+        {
+            // 检查任务是否被取消
+            if (task->isCancelled) {
+                file.close();
+                std::remove(target_file.c_str());
+                break;
+            }
+            // 处理暂停状态
+            while (task->isPaused && !task->isCancelled) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+
+            if (!receiveMessage(response, DOWNLOAD_TYPE)) {
+                if (m_errorCallback) {
+                    m_errorCallback("Failed to receive download response");
+                }
+                return;
+            }
+            if (response.results().empty() || !response.results(0).exists()) {
+                if (m_errorCallback) {
+                    m_errorCallback("File not found on server");
+                }
+                return;
+            }
+
+            auto fileInfo = response.results(0);
+            //分片校验
+            uint32_t calculated_crc = calculateCRC32(fileInfo.data().c_str(), fileInfo.data().length());
+            if(calculated_crc == fileInfo.checksum())
+            {
+                file.seekp(file_total_len);
+                file.write(fileInfo.data().c_str(), fileInfo.data().length());
+                file_total_len += fileInfo.data().length();
+                //file.close();
+                auto req_info = request.mutable_files(0);
+                req_info->set_offset(file_total_len);
+                // 更新进度回调
+                if (task->progressCallback) {
+                    transfer::TransferProgressResponse progress;
+                    progress.set_task_id(task->taskId);
+                    progress.set_status(file_total_len < task->fileSize ? 
+                                        transfer::TRANSFERRING : transfer::COMPLETED);
+                    progress.set_transferred_size(file_total_len);
+                    progress.set_total_size(task->fileSize);
+                    progress.set_progress(static_cast<uint32_t>((file_total_len * 100) / task->fileSize));
+                    task->progressCallback(progress);
+                }
+            }
+            else
+            {
+                if (m_errorCallback) {
+                    m_errorCallback("Chunk checksum verification failed");
+                }
+            }
+            if(fileInfo.is_last() == true)
+            {
+                file.close();
+                //验证文件md5
+                std::string downloaded_md5 = calculateFileMD5(target_file);
+                if (downloaded_md5 != fileInfo.md5()) {
+                    if (m_errorCallback) {
+                        m_errorCallback("File MD5 verification failed");
+                    }
+                    std::remove(target_file.c_str());
+                }
+                break;
+            }
+            else
+            {
+                if (!sendMessage(request, DOWNLOAD_TYPE)) {
+                    if (m_errorCallback) {
+                        m_errorCallback("Failed to send download request");
+                    }
+                    return;
+                }
+            }
+        } while (1);
+    }
+    else
+    {
+        std::ofstream file(target_file,fileInfo.chunk_sequence()==0?
+                std::ios::binary | std::ios::trunc : 
+                std::ios::binary | std::ios::app);
+        if (!file) {
+                //request.files(0)->set_error_message("Failed to open file for writing");
+        }
+        file.seekp(fileInfo.chunk_size()*fileInfo.chunk_sequence());
+        file.write(fileInfo.data().c_str(), fileInfo.data().length());
+        file.close();
+        std::string downloaded_md5 = calculateFileMD5(target_file);
+        if (downloaded_md5 != fileInfo.md5()) {
+            if (m_errorCallback) {
+                m_errorCallback("File MD5 verification failed");
+            }
+            std::remove(target_file.c_str());
         }
 
-        file.write(buffer.data(), buffer.size());
-        task->transferredSize += buffer.size();
-
-        // 更新进度
+        // 更新进度回调
         if (task->progressCallback) {
             transfer::TransferProgressResponse progress;
             progress.set_task_id(task->taskId);
-            progress.set_status(transfer::TRANSFERRING);
-            progress.set_transferred_size(task->transferredSize);
+            progress.set_status(fileInfo.chunk_size()*fileInfo.chunk_sequence() < task->fileSize ? 
+                                transfer::TRANSFERRING : transfer::COMPLETED);
+            progress.set_transferred_size(fileInfo.chunk_size()*fileInfo.chunk_sequence());
             progress.set_total_size(task->fileSize);
-            progress.set_progress(static_cast<uint32_t>((task->transferredSize * 100) / task->fileSize));
+            progress.set_progress(static_cast<uint32_t>((fileInfo.chunk_size()*fileInfo.chunk_sequence() * 100) / task->fileSize));
             task->progressCallback(progress);
         }
+
     }
 
-    file.close();
-
-    // 验证MD5
-    std::string downloadedMD5 = calculateFileMD5(task->targetPath);
-    if (downloadedMD5 != fileResult.md5()) {
-        if (m_errorCallback) {
-            m_errorCallback("MD5 verification failed");
-        }
-        // 删除损坏的文件
-        std::remove(task->targetPath.c_str());
-    }
-
+    // 清理任务资源
     {
         std::lock_guard<std::mutex> lock(m_tasksMutex);
         auto it = m_transferTasks.find(task->taskId);
         if (it != m_transferTasks.end()) {
-            delete it->second;  // 释放内存
+            delete it->second;
             m_transferTasks.erase(it);
         }
     }

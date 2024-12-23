@@ -1,4 +1,7 @@
 #pragma once
+#ifndef NET_TOOL_H
+#define NET_TOOL_H
+
 
 #include <string>
 #include <vector>
@@ -159,3 +162,5 @@ public:
     // 添加下载任务处理函数 
     void handleDownloadTask(TransferTask* task);
 };
+
+#endif  // NET_TOOL_H

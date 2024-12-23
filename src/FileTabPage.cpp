@@ -642,13 +642,18 @@ void FileTabPage::handleDownloadFiles(const QModelIndexList& indexes, const QStr
     for (const QModelIndex& index : indexes) {
         if (index.column() == 0) { // 只处理第一列
             auto* model = qobject_cast<RemoteFileSystemModel*>(m_remoteModel);
+            QString remote_cur_path = model->currentPath();
             const RemoteFileInfo& fileInfo = model->fileInfo(index);
-            QString fullTargetPath = targetPath + "/" + fileInfo.name;
+            QString file_name;
+            if(remote_cur_path == "/")
+                file_name = remote_cur_path + fileInfo.name;
+            else
+                file_name = remote_cur_path + '/' + fileInfo.name;
 
             // 调用Net_Tool开始下载任务
             FileClient::m_netTool->startDownloadTask(
-                fileInfo.path.toStdString(),
-                fullTargetPath.toStdString(),
+                file_name.toStdString(),//远程文件路径+文件名
+                targetPath.toStdString(),//下载本地目标位置
                 std::bind(&FileTabPage::onTransferProgress, this, 
                     std::placeholders::_1)
             );
