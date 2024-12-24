@@ -300,6 +300,53 @@ transfer::DirectoryResponse Net_Tool::sendDirectoryRequest(const transfer::Direc
     return response;
 }
 
+/**
+ * 将UTF-8编码字符串转换为GBK编码
+ * @param utf8_str UTF-8编码字符串
+ * @return GBK编码字符串
+ */
+std::string Net_Tool::convertToGBK(const std::string& utf8_str) {
+#ifdef _WIN32
+    // 使用CP_ACP改为使用CP_GBK,确保正确转换为GBK编码
+    int len = MultiByteToWideChar(CP_UTF8, 0, utf8_str.c_str(), -1, NULL, 0);
+    wchar_t* wstr = new wchar_t[len];
+    MultiByteToWideChar(CP_UTF8, 0, utf8_str.c_str(), -1, wstr, len);
+    len = WideCharToMultiByte(CP_ACP, 0, wstr, -1, NULL, 0, NULL, NULL);
+    char* str = new char[len];
+    WideCharToMultiByte(CP_ACP, 0, wstr, -1, str, len, NULL, NULL);
+    std::string gbk_str(str);
+    delete[] wstr;
+    delete[] str;
+    return gbk_str;
+#else
+    return utf8_str;
+#endif
+}
+
+/**
+ * 将GBK编码字符串转换为UTF-8编码
+ * @param gbk_str GBK编码字符串
+ * @return UTF-8编码字符串
+ */
+std::string Net_Tool::convertToUTF8(const std::string& gbk_str) {
+#ifdef _WIN32
+    // 使用CP_ACP改为使用CP_GBK,确保正确转换为GBK编码
+    int len = MultiByteToWideChar(CP_ACP, 0, gbk_str.c_str(), -1, NULL, 0);
+    wchar_t* wstr = new wchar_t[len];
+    MultiByteToWideChar(CP_ACP, 0, gbk_str.c_str(), -1, wstr, len);
+    len = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
+    char* str = new char[len];
+    WideCharToMultiByte(CP_UTF8, 0, wstr, -1, str, len, NULL, NULL);
+    std::string utf8_str(str);
+    delete[] wstr;
+    delete[] str;
+    return utf8_str;
+#else
+    return gbk_str;
+#endif
+}
+
+
 transfer::RequestHeader Net_Tool::createRequestHeader(transfer::MessageType type) {
     transfer::RequestHeader header;
     header.set_session_id(generateTaskId());  // 使用任务ID生成器来生成会话ID
@@ -391,7 +438,7 @@ transfer::UploadRequest Net_Tool::createUploadRequest(
     transfer::UploadRequest request;
     request.set_allocated_header(new transfer::RequestHeader(createRequestHeader(transfer::UPLOAD)));
     // 获取文件信息
-    std::ifstream file(fileName, std::ios::binary | std::ios::ate);
+    std::ifstream file(convertToGBK(fileName), std::ios::binary | std::ios::ate);
     if (!file) {
         return request;
     }
@@ -403,7 +450,7 @@ transfer::UploadRequest Net_Tool::createUploadRequest(
     fileInfo->set_file_name(fileName.substr(fileName.find_last_of("/\\") + 1));//文件名
     fileInfo->set_target_path(targetPath);//目标路径
     fileInfo->set_file_size(fileSize);//文件大小
-    fileInfo->set_md5(calculateFileMD5(fileName));//文件MD5
+    fileInfo->set_md5(calculateFileMD5(convertToGBK(fileName)));//文件MD5
     fileInfo->set_need_chunk(fileSize > chunkSize);//是否分片
     fileInfo->set_chunk_size(chunkSize);//分片大小
     fileInfo->set_chunk_sequence(0);//分片序号
@@ -502,7 +549,7 @@ void Net_Tool::startDownloadTask(const std::string& fileName, const std::string&
 // 上传任务处理函数
 void Net_Tool::handleUploadTask(TransferTask* task)
 {
-    std::ifstream file(task->fileName, std::ios::binary | std::ios::ate);
+    std::ifstream file(convertToGBK(task->fileName), std::ios::binary | std::ios::ate);
     if (!file) {
         if (m_errorCallback) {
             m_errorCallback("Failed to open file: " + task->fileName);
@@ -650,7 +697,7 @@ void Net_Tool::handleDownloadTask(TransferTask* task) {
     task->fileSize = fileInfo.file_size();
 
     // 创建输出文件
-    std::string target_file = fileInfo.target_path() + "/" + fileInfo.file_name();
+    std::string target_file = convertToGBK(fileInfo.target_path() + "/" + fileInfo.file_name());//文件名转换为GBK编码
 
     if(fileInfo.need_chunk())
     {

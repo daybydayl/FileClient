@@ -106,6 +106,11 @@ private:
     Net_Tool(const Net_Tool&) = delete;
     Net_Tool& operator=(const Net_Tool&) = delete;
 
+    // 将UTF-8编码字符串转换为GBK编码
+    std::string convertToGBK(const std::string& utf8_str);
+    // 将GBK编码字符串转换为UTF-8编码
+    std::string convertToUTF8(const std::string& gbk_str);
+
 public:
     // 生成文件的MD5值
     std::string calculateFileMD5(const std::string& filePath);
