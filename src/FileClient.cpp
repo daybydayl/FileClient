@@ -1,3 +1,4 @@
+#include <QDebug>
 #include "FileClient.h"
 
 Net_Tool* FileClient::m_netTool = Net_Tool::getInstance();
@@ -78,6 +79,13 @@ FileClient::FileClient(QWidget *parent)
     m_menuBar->setCornerWidget(cornerWidget, Qt::TopRightCorner);
 
     connect(m_onTopButton, &QPushButton::clicked, this, &FileClient::toggleWindowOnTop);
+
+    // 连接传输进度信号
+    bool connected = connect(this, &FileClient::transferProgressUpdated,
+                           m_progressWidget, &ProgressWidget::onTransferProgressUpdated,
+                           Qt::QueuedConnection);
+    
+    //qDebug() << "Signal-slot connection established:" << connected;
 }
 
 FileClient::~FileClient()
@@ -239,6 +247,11 @@ void FileClient::initCentralWidget()
     // 创建传输进度页
     m_progressWidget = new ProgressWidget(this);
     bottomTabs->addTab(m_progressWidget, QIcon(":/icons/icons/transfer.png"), tr("传输"));
+    
+    // 在这里建立信号槽连接
+    connect(this, &FileClient::transferProgressUpdated,
+            m_progressWidget, &ProgressWidget::onTransferProgressUpdated,
+            Qt::QueuedConnection);  // 使用队列连接确保线程安全
     
     // 创建日志页
     m_logWidget = new LogWidget(this);
@@ -516,4 +529,27 @@ void FileClient::handleRemoteTabClosed()
 {
     // 断开连接
     handleDisconnect();
+}
+
+void FileClient::updateTransferProgress(
+    const std::string& taskId,
+    const std::string& fileName,
+    uint64_t totalSize,
+    int progress,
+    const std::string& status,
+    const std::string& speed,
+    const std::string& remainingTime
+) {
+    // qDebug() << "Emitting signal with fileName:" << QString::fromStdString(fileName)
+    //          << "progress:" << progress;
+             
+    emit transferProgressUpdated(
+        QString::fromStdString(taskId),
+        QString::fromStdString(fileName),
+        totalSize,
+        progress,
+        QString::fromStdString(status),
+        QString::fromStdString(speed),
+        QString::fromStdString(remainingTime)
+    );
 }

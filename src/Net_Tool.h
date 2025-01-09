@@ -41,7 +41,7 @@
 #define TRANSFER_PROGRESS_TYPE 5
 
 
-#define CHUNK_SIZE 1024 * 1024
+#define CHUNK_SIZE 1024 * 1024 * 50 //每次传输的数据大小，类似带宽
 
 class Net_Tool {
 public:
@@ -74,6 +74,9 @@ public:
 
     // 生成传输进度查询请求
     transfer::TransferProgressRequest createTransferProgressRequest(const std::string& taskId);
+
+    // 处理传输进度
+    static void Net_Tool::handleTransferProgress(const transfer::TransferProgressResponse& progress);
 
     // 开始文件上传任务
     void startUploadTask(const std::string& fileName, const std::string& targetPath,

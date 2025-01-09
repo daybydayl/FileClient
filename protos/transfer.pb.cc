@@ -515,6 +515,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_transfer_2eproto::offsets[] PR
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::transfer::TransferProgressResponse, header_),
   PROTOBUF_FIELD_OFFSET(::transfer::TransferProgressResponse, task_id_),
+  PROTOBUF_FIELD_OFFSET(::transfer::TransferProgressResponse, task_name_),
   PROTOBUF_FIELD_OFFSET(::transfer::TransferProgressResponse, status_),
   PROTOBUF_FIELD_OFFSET(::transfer::TransferProgressResponse, transferred_size_),
   PROTOBUF_FIELD_OFFSET(::transfer::TransferProgressResponse, total_size_),
@@ -621,17 +622,18 @@ const char descriptor_table_protodef_transfer_2eproto[] =
   "s\030\003 \001(\010\022,\n\nnew_status\030\004 \001(\0162\030.transfer.T"
   "ransferStatus\"S\n\027TransferProgressRequest"
   "\022\'\n\006header\030\001 \001(\0132\027.transfer.RequestHeade"
-  "r\022\017\n\007task_id\030\002 \001(\t\"\316\001\n\030TransferProgressR"
+  "r\022\017\n\007task_id\030\002 \001(\t\"\341\001\n\030TransferProgressR"
   "esponse\022(\n\006header\030\001 \001(\0132\030.transfer.Respo"
-  "nseHeader\022\017\n\007task_id\030\002 \001(\t\022(\n\006status\030\003 \001"
-  "(\0162\030.transfer.TransferStatus\022\030\n\020transfer"
-  "red_size\030\004 \001(\004\022\022\n\ntotal_size\030\005 \001(\004\022\r\n\005sp"
-  "eed\030\006 \001(\r\022\020\n\010progress\030\007 \001(\r*p\n\013MessageTy"
-  "pe\022\013\n\007UNKNOWN\020\000\022\r\n\tDIRECTORY\020\001\022\n\n\006UPLOAD"
-  "\020\002\022\014\n\010DOWNLOAD\020\003\022\024\n\020TRANSFER_CONTROL\020\004\022\025"
-  "\n\021TRANSFER_PROGRESS\020\005*S\n\016TransferStatus\022"
-  "\010\n\004INIT\020\000\022\020\n\014TRANSFERRING\020\001\022\n\n\006PAUSED\020\002\022"
-  "\r\n\tCOMPLETED\020\003\022\n\n\006FAILED\020\004b\006proto3"
+  "nseHeader\022\017\n\007task_id\030\002 \001(\t\022\021\n\ttask_name\030"
+  "\003 \001(\t\022(\n\006status\030\004 \001(\0162\030.transfer.Transfe"
+  "rStatus\022\030\n\020transferred_size\030\005 \001(\004\022\022\n\ntot"
+  "al_size\030\006 \001(\004\022\r\n\005speed\030\007 \001(\r\022\020\n\010progress"
+  "\030\010 \001(\r*p\n\013MessageType\022\013\n\007UNKNOWN\020\000\022\r\n\tDI"
+  "RECTORY\020\001\022\n\n\006UPLOAD\020\002\022\014\n\010DOWNLOAD\020\003\022\024\n\020T"
+  "RANSFER_CONTROL\020\004\022\025\n\021TRANSFER_PROGRESS\020\005"
+  "*S\n\016TransferStatus\022\010\n\004INIT\020\000\022\020\n\014TRANSFER"
+  "RING\020\001\022\n\n\006PAUSED\020\002\022\r\n\tCOMPLETED\020\003\022\n\n\006FAI"
+  "LED\020\004b\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_transfer_2eproto_deps[1] = {
 };
@@ -657,7 +659,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_tra
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_transfer_2eproto_once;
 static bool descriptor_table_transfer_2eproto_initialized = false;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_transfer_2eproto = {
-  &descriptor_table_transfer_2eproto_initialized, descriptor_table_protodef_transfer_2eproto, "transfer.proto", 2794,
+  &descriptor_table_transfer_2eproto_initialized, descriptor_table_protodef_transfer_2eproto, "transfer.proto", 2813,
   &descriptor_table_transfer_2eproto_once, descriptor_table_transfer_2eproto_sccs, descriptor_table_transfer_2eproto_deps, 17, 0,
   schemas, file_default_instances, TableStruct_transfer_2eproto::offsets,
   file_level_metadata_transfer_2eproto, 17, file_level_enum_descriptors_transfer_2eproto, file_level_service_descriptors_transfer_2eproto,
@@ -8403,6 +8405,7 @@ TransferProgressResponse::HasBitSetters::header(const TransferProgressResponse* 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int TransferProgressResponse::kHeaderFieldNumber;
 const int TransferProgressResponse::kTaskIdFieldNumber;
+const int TransferProgressResponse::kTaskNameFieldNumber;
 const int TransferProgressResponse::kStatusFieldNumber;
 const int TransferProgressResponse::kTransferredSizeFieldNumber;
 const int TransferProgressResponse::kTotalSizeFieldNumber;
@@ -8423,6 +8426,10 @@ TransferProgressResponse::TransferProgressResponse(const TransferProgressRespons
   if (from.task_id().size() > 0) {
     task_id_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.task_id_);
   }
+  task_name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (from.task_name().size() > 0) {
+    task_name_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.task_name_);
+  }
   if (from.has_header()) {
     header_ = new ::transfer::ResponseHeader(*from.header_);
   } else {
@@ -8437,6 +8444,7 @@ TransferProgressResponse::TransferProgressResponse(const TransferProgressRespons
 void TransferProgressResponse::SharedCtor() {
   ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_TransferProgressResponse_transfer_2eproto.base);
   task_id_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  task_name_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   ::memset(&header_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&progress_) -
       reinterpret_cast<char*>(&header_)) + sizeof(progress_));
@@ -8449,6 +8457,7 @@ TransferProgressResponse::~TransferProgressResponse() {
 
 void TransferProgressResponse::SharedDtor() {
   task_id_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  task_name_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (this != internal_default_instance()) delete header_;
 }
 
@@ -8468,6 +8477,7 @@ void TransferProgressResponse::Clear() {
   (void) cached_has_bits;
 
   task_id_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  task_name_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (GetArenaNoVirtual() == nullptr && header_ != nullptr) {
     delete header_;
   }
@@ -8500,38 +8510,45 @@ const char* TransferProgressResponse::_InternalParse(const char* ptr, ::PROTOBUF
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // .transfer.TransferStatus status = 3;
+      // string task_name = 3;
       case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParserUTF8(mutable_task_name(), ptr, ctx, "transfer.TransferProgressResponse.task_name");
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // .transfer.TransferStatus status = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
           ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
           CHK_(ptr);
           set_status(static_cast<::transfer::TransferStatus>(val));
         } else goto handle_unusual;
         continue;
-      // uint64 transferred_size = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
+      // uint64 transferred_size = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
           transferred_size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // uint64 total_size = 5;
-      case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
+      // uint64 total_size = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
           total_size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // uint32 speed = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
+      // uint32 speed = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 56)) {
           speed_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // uint32 progress = 7;
-      case 7:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 56)) {
+      // uint32 progress = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 64)) {
           progress_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
@@ -8592,9 +8609,24 @@ bool TransferProgressResponse::MergePartialFromCodedStream(
         break;
       }
 
-      // .transfer.TransferStatus status = 3;
+      // string task_name = 3;
       case 3: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (24 & 0xFF)) {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (26 & 0xFF)) {
+          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadString(
+                input, this->mutable_task_name()));
+          DO_(::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+            this->task_name().data(), static_cast<int>(this->task_name().length()),
+            ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE,
+            "transfer.TransferProgressResponse.task_name"));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .transfer.TransferStatus status = 4;
+      case 4: {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (32 & 0xFF)) {
           int value = 0;
           DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
                    int, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_ENUM>(
@@ -8606,9 +8638,9 @@ bool TransferProgressResponse::MergePartialFromCodedStream(
         break;
       }
 
-      // uint64 transferred_size = 4;
-      case 4: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (32 & 0xFF)) {
+      // uint64 transferred_size = 5;
+      case 5: {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (40 & 0xFF)) {
 
           DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
                    ::PROTOBUF_NAMESPACE_ID::uint64, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT64>(
@@ -8619,9 +8651,9 @@ bool TransferProgressResponse::MergePartialFromCodedStream(
         break;
       }
 
-      // uint64 total_size = 5;
-      case 5: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (40 & 0xFF)) {
+      // uint64 total_size = 6;
+      case 6: {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (48 & 0xFF)) {
 
           DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
                    ::PROTOBUF_NAMESPACE_ID::uint64, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT64>(
@@ -8632,9 +8664,9 @@ bool TransferProgressResponse::MergePartialFromCodedStream(
         break;
       }
 
-      // uint32 speed = 6;
-      case 6: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (48 & 0xFF)) {
+      // uint32 speed = 7;
+      case 7: {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (56 & 0xFF)) {
 
           DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
                    ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
@@ -8645,9 +8677,9 @@ bool TransferProgressResponse::MergePartialFromCodedStream(
         break;
       }
 
-      // uint32 progress = 7;
-      case 7: {
-        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (56 & 0xFF)) {
+      // uint32 progress = 8;
+      case 8: {
+        if (static_cast< ::PROTOBUF_NAMESPACE_ID::uint8>(tag) == (64 & 0xFF)) {
 
           DO_((::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::ReadPrimitive<
                    ::PROTOBUF_NAMESPACE_ID::uint32, ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32>(
@@ -8701,30 +8733,40 @@ void TransferProgressResponse::SerializeWithCachedSizes(
       2, this->task_id(), output);
   }
 
-  // .transfer.TransferStatus status = 3;
+  // string task_name = 3;
+  if (this->task_name().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->task_name().data(), static_cast<int>(this->task_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "transfer.TransferProgressResponse.task_name");
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteStringMaybeAliased(
+      3, this->task_name(), output);
+  }
+
+  // .transfer.TransferStatus status = 4;
   if (this->status() != 0) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnum(
-      3, this->status(), output);
+      4, this->status(), output);
   }
 
-  // uint64 transferred_size = 4;
+  // uint64 transferred_size = 5;
   if (this->transferred_size() != 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64(4, this->transferred_size(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64(5, this->transferred_size(), output);
   }
 
-  // uint64 total_size = 5;
+  // uint64 total_size = 6;
   if (this->total_size() != 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64(5, this->total_size(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64(6, this->total_size(), output);
   }
 
-  // uint32 speed = 6;
+  // uint32 speed = 7;
   if (this->speed() != 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(6, this->speed(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(7, this->speed(), output);
   }
 
-  // uint32 progress = 7;
+  // uint32 progress = 8;
   if (this->progress() != 0) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(7, this->progress(), output);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32(8, this->progress(), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -8758,30 +8800,41 @@ void TransferProgressResponse::SerializeWithCachedSizes(
         2, this->task_id(), target);
   }
 
-  // .transfer.TransferStatus status = 3;
+  // string task_name = 3;
+  if (this->task_name().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->task_name().data(), static_cast<int>(this->task_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "transfer.TransferProgressResponse.task_name");
+    target =
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteStringToArray(
+        3, this->task_name(), target);
+  }
+
+  // .transfer.TransferStatus status = 4;
   if (this->status() != 0) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
-      3, this->status(), target);
+      4, this->status(), target);
   }
 
-  // uint64 transferred_size = 4;
+  // uint64 transferred_size = 5;
   if (this->transferred_size() != 0) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(4, this->transferred_size(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(5, this->transferred_size(), target);
   }
 
-  // uint64 total_size = 5;
+  // uint64 total_size = 6;
   if (this->total_size() != 0) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(5, this->total_size(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(6, this->total_size(), target);
   }
 
-  // uint32 speed = 6;
+  // uint32 speed = 7;
   if (this->speed() != 0) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(6, this->speed(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(7, this->speed(), target);
   }
 
-  // uint32 progress = 7;
+  // uint32 progress = 8;
   if (this->progress() != 0) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(7, this->progress(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(8, this->progress(), target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -8812,6 +8865,13 @@ size_t TransferProgressResponse::ByteSizeLong() const {
         this->task_id());
   }
 
+  // string task_name = 3;
+  if (this->task_name().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->task_name());
+  }
+
   // .transfer.ResponseHeader header = 1;
   if (this->has_header()) {
     total_size += 1 +
@@ -8819,34 +8879,34 @@ size_t TransferProgressResponse::ByteSizeLong() const {
         *header_);
   }
 
-  // uint64 transferred_size = 4;
+  // uint64 transferred_size = 5;
   if (this->transferred_size() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64Size(
         this->transferred_size());
   }
 
-  // .transfer.TransferStatus status = 3;
+  // .transfer.TransferStatus status = 4;
   if (this->status() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->status());
   }
 
-  // uint32 speed = 6;
+  // uint32 speed = 7;
   if (this->speed() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
         this->speed());
   }
 
-  // uint64 total_size = 5;
+  // uint64 total_size = 6;
   if (this->total_size() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64Size(
         this->total_size());
   }
 
-  // uint32 progress = 7;
+  // uint32 progress = 8;
   if (this->progress() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
@@ -8883,6 +8943,10 @@ void TransferProgressResponse::MergeFrom(const TransferProgressResponse& from) {
   if (from.task_id().size() > 0) {
 
     task_id_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.task_id_);
+  }
+  if (from.task_name().size() > 0) {
+
+    task_name_.AssignWithDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from.task_name_);
   }
   if (from.has_header()) {
     mutable_header()->::transfer::ResponseHeader::MergeFrom(from.header());
@@ -8930,6 +8994,8 @@ void TransferProgressResponse::InternalSwap(TransferProgressResponse* other) {
   using std::swap;
   _internal_metadata_.Swap(&other->_internal_metadata_);
   task_id_.Swap(&other->task_id_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
+  task_name_.Swap(&other->task_name_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   swap(header_, other->header_);
   swap(transferred_size_, other->transferred_size_);

@@ -44,6 +44,29 @@ public:
     explicit FileClient(QWidget *parent = nullptr);
     ~FileClient();
 
+    // 更新传输进度到UI
+    void updateTransferProgress(
+        const std::string& taskId,
+        const std::string& fileName,
+        uint64_t totalSize,
+        int progress,
+        const std::string& status,
+        const std::string& speed,
+        const std::string& remainingTime
+    );
+
+signals:
+    // 添加传输进度更新信号
+    void transferProgressUpdated(
+        const QString& taskId,
+        const QString& fileName,
+        uint64_t totalSize,
+        int progress,
+        const QString& status,
+        const QString& speed,
+        const QString& remainingTime
+    );
+
 private:
     // 初始化界面组件的函数
     void initMenuBar();         // 初始化菜单栏

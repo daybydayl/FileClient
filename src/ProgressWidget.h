@@ -6,6 +6,7 @@
 #include <QMap>
 #include <QProgressBar>
 #include <QLabel>
+#include <QMenu>
 
 /**
  * @brief 进度显示组件
@@ -25,6 +26,19 @@ public:
 
 public slots:
     void updateProgress(const QString& taskId, int progress, qint64 transferred, qint64 total);
+    void onTransferProgressUpdated(
+        const QString& taskId,
+        const QString& fileName,
+        uint64_t totalSize,
+        int progress,
+        const QString& status,
+        const QString& speed,
+        const QString& remainingTime
+    );
+    
+private slots:
+    void showContextMenu(const QPoint& pos);
+    void clearAllProgress();
 
 private:
     void removeProgressBar(const QString& taskId);
@@ -34,6 +48,7 @@ private:
     QTreeWidget* m_treeWidget;
     QMap<QString, QProgressBar*> m_progressBars;
     QMap<QString, QLabel*> m_labels;
+    QMenu* m_contextMenu;
 };
 
 #endif // PROGRESSWIDGET_H 

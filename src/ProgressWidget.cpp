@@ -5,6 +5,10 @@
 #include <QProgressBar>
 #include <QLabel>
 #include <QTimer>
+#include <QDebug>
+#include <QMenu>
+#include <QAction>
+//#include <QThread>
 
 ProgressWidget::ProgressWidget(QWidget* parent)
     : QWidget(parent)
@@ -21,7 +25,7 @@ ProgressWidget::ProgressWidget(QWidget* parent)
     // 设置表头
     QStringList headers;
     headers << tr("文件名") << tr("大小") << tr("传输进度") 
-            << tr("状态") << tr("速度") << tr("剩余时间");
+            << tr("状态") ;//<< tr("速度") << tr("剩余时间");
     m_treeWidget->setHeaderLabels(headers);
     
     // 设置列宽
@@ -29,8 +33,21 @@ ProgressWidget::ProgressWidget(QWidget* parent)
     m_treeWidget->setColumnWidth(1, 80);   // 大小列
     m_treeWidget->setColumnWidth(2, 100);  // 进度列
     m_treeWidget->setColumnWidth(3, 80);   // 状态列
-    m_treeWidget->setColumnWidth(4, 80);   // 速度列
-    m_treeWidget->setColumnWidth(5, 80);   // 剩余时间列
+    // m_treeWidget->setColumnWidth(4, 80);   // 速度列
+    // m_treeWidget->setColumnWidth(5, 80);   // 剩余时间列
+
+    // 初始化右键菜单
+    m_contextMenu = new QMenu(this);
+    QAction* clearAction = new QAction(tr("清除所有"), this);
+    m_contextMenu->addAction(clearAction);
+    
+    // 连接信号槽
+    connect(clearAction, &QAction::triggered, this, &ProgressWidget::clearAllProgress);//清除
+    connect(m_treeWidget, &QTreeWidget::customContextMenuRequested,
+            this, &ProgressWidget::showContextMenu);//右键菜单
+            
+    // 设置右键菜单策略
+    m_treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
 
     layout->addWidget(m_treeWidget);
 }
@@ -93,4 +110,103 @@ QString ProgressWidget::formatFileSize(qint64 size) const
     } else {
         return QString("%1 GB").arg(size / GB);
     }
+}
+
+void ProgressWidget::onTransferProgressUpdated(
+    const QString& taskId,
+    const QString& fileName,
+    uint64_t totalSize,
+    int progress,
+    const QString& status,
+    const QString& speed,
+    const QString& remainingTime
+) {
+    // qDebug() << "Slot called with fileName:" << fileName
+    //          << "progress:" << progress;
+             
+    // 更新进度列表中的项目
+    // 如果任务ID不存在则添加新项目，否则更新现有项目
+    
+    // 示例实现:
+    QTreeWidgetItem* item = nullptr;
+    
+    // 查找是否已存在该任务的项目
+    for(int i = 0; i < m_treeWidget->topLevelItemCount(); i++) {
+        if(m_treeWidget->topLevelItem(i)->data(0, Qt::UserRole).toString() == taskId) {
+            item = m_treeWidget->topLevelItem(i);
+            break;
+        }
+    }
+    
+    // 如果不存在则创建新项目
+    if(!item) {
+        item = new QTreeWidgetItem(m_treeWidget);
+        item->setData(0, Qt::UserRole, taskId);
+    }
+    
+    // 更新项目内容
+    item->setText(0, fileName);
+    
+    // 格式化文件大小显示
+    QString sizeStr;
+    if(totalSize < 1024) {
+        sizeStr = QString("%1 B").arg(totalSize);
+    } else if(totalSize < 1024*1024) {
+        sizeStr = QString("%1 KB").arg(totalSize/1024);
+    } else {
+        sizeStr = QString("%1 MB").arg(totalSize/(1024*1024));
+    }
+    item->setText(1, sizeStr);
+    
+    // 设置进度条
+    QProgressBar* progressBar = qobject_cast<QProgressBar*>(
+        m_treeWidget->itemWidget(item, 2));
+    if(!progressBar) {
+        progressBar = new QProgressBar();
+        progressBar->setTextVisible(true);
+        progressBar->setAlignment(Qt::AlignCenter);
+        m_treeWidget->setItemWidget(item, 2, progressBar);
+    }
+    progressBar->setValue(progress);
+    
+    item->setText(3, status);
+    // item->setText(4, speed);
+    // item->setText(5, remainingTime);
+    
+    if(status == "已完成") {
+        //睡眠1秒
+        // QThread::msleep(1000);
+        // delete item;
+    }
+}
+
+void ProgressWidget::showContextMenu(const QPoint& pos)
+{
+    if (m_treeWidget->topLevelItemCount() > 0) {
+        m_contextMenu->exec(m_treeWidget->mapToGlobal(pos));
+    }
+}
+
+void ProgressWidget::clearAllProgress()
+{
+    // 删除所有项目
+    while (m_treeWidget->topLevelItemCount() > 0) {
+        QTreeWidgetItem* item = m_treeWidget->takeTopLevelItem(0);
+        
+        // 获取进度条并删除
+        QProgressBar* progressBar = qobject_cast<QProgressBar*>(
+            m_treeWidget->itemWidget(item, 2));
+        if (progressBar) {
+            m_treeWidget->removeItemWidget(item, 2);
+            delete progressBar;
+        }
+        
+        delete item;
+    }
+    
+    // 清除进度条和标签的映射
+    qDeleteAll(m_progressBars);
+    m_progressBars.clear();
+    qDeleteAll(m_labels);
+    m_labels.clear();
 } 

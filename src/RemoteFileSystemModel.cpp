@@ -92,19 +92,40 @@ void RemoteFileSystemModel::updateModel(const transfer::DirectoryResponse& respo
         clear();
         
         // 遍历并添加新的文件条目
+        // 创建两个向量，分别存储目录文件和普通文件信息
+        std::vector<RemoteFileInfo> directoryFiles;
+        std::vector<RemoteFileInfo> normalFiles;
+        // 遍历响应中的所有文件
         for(const auto& file : response.files()) {
             RemoteFileInfo fileInfo;
+            // 设置文件信息的名称和路径
             fileInfo.name = QString::fromStdString(file.name());
             fileInfo.path = QString::fromStdString(response.path());
+            // 过滤掉当前目录和根目录下的上级目录项
             if(fileInfo.name=="." || (response.path()=="/"&&fileInfo.name == ".."))
             {//.项和根目录下..项不显示
                 continue;
             }
+            // 根据文件类型设置是否为目录
             fileInfo.isDirectory = file.is_directory();
+            // 设置文件大小
             fileInfo.size = file.size();
+            // 设置文件修改时间
             fileInfo.modifyTime = QDateTime::fromString(QString::fromStdString(file.modify_time()), Qt::ISODate);
             
-            addFile(fileInfo);
+            // 根据文件类型将文件信息添加到对应的向量中
+            if(fileInfo.isDirectory)
+                directoryFiles.push_back(fileInfo);
+            else
+                normalFiles.push_back(fileInfo);
         }
+        // 对目录文件和普通文件进行排序，以便按名称排序显示
+        std::sort(directoryFiles.begin(), directoryFiles.end(), [](const RemoteFileInfo& a, const RemoteFileInfo& b) { return a.name < b.name; });
+        std::sort(normalFiles.begin(), normalFiles.end(), [](const RemoteFileInfo& a, const RemoteFileInfo& b) { return a.name < b.name; });
+        // 将排序后的目录文件和普通文件添加到模型中
+        for(const auto& file : directoryFiles)
+            addFile(file);
+        for(const auto& file : normalFiles)
+            addFile(file);
     }
 } 

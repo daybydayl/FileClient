@@ -3070,6 +3070,18 @@ class TransferProgressResponse :
   std::string* release_task_id();
   void set_allocated_task_id(std::string* task_id);
 
+  // string task_name = 3;
+  void clear_task_name();
+  static const int kTaskNameFieldNumber = 3;
+  const std::string& task_name() const;
+  void set_task_name(const std::string& value);
+  void set_task_name(std::string&& value);
+  void set_task_name(const char* value);
+  void set_task_name(const char* value, size_t size);
+  std::string* mutable_task_name();
+  std::string* release_task_name();
+  void set_allocated_task_name(std::string* task_name);
+
   // .transfer.ResponseHeader header = 1;
   bool has_header() const;
   void clear_header();
@@ -3079,33 +3091,33 @@ class TransferProgressResponse :
   ::transfer::ResponseHeader* mutable_header();
   void set_allocated_header(::transfer::ResponseHeader* header);
 
-  // uint64 transferred_size = 4;
+  // uint64 transferred_size = 5;
   void clear_transferred_size();
-  static const int kTransferredSizeFieldNumber = 4;
+  static const int kTransferredSizeFieldNumber = 5;
   ::PROTOBUF_NAMESPACE_ID::uint64 transferred_size() const;
   void set_transferred_size(::PROTOBUF_NAMESPACE_ID::uint64 value);
 
-  // .transfer.TransferStatus status = 3;
+  // .transfer.TransferStatus status = 4;
   void clear_status();
-  static const int kStatusFieldNumber = 3;
+  static const int kStatusFieldNumber = 4;
   ::transfer::TransferStatus status() const;
   void set_status(::transfer::TransferStatus value);
 
-  // uint32 speed = 6;
+  // uint32 speed = 7;
   void clear_speed();
-  static const int kSpeedFieldNumber = 6;
+  static const int kSpeedFieldNumber = 7;
   ::PROTOBUF_NAMESPACE_ID::uint32 speed() const;
   void set_speed(::PROTOBUF_NAMESPACE_ID::uint32 value);
 
-  // uint64 total_size = 5;
+  // uint64 total_size = 6;
   void clear_total_size();
-  static const int kTotalSizeFieldNumber = 5;
+  static const int kTotalSizeFieldNumber = 6;
   ::PROTOBUF_NAMESPACE_ID::uint64 total_size() const;
   void set_total_size(::PROTOBUF_NAMESPACE_ID::uint64 value);
 
-  // uint32 progress = 7;
+  // uint32 progress = 8;
   void clear_progress();
-  static const int kProgressFieldNumber = 7;
+  static const int kProgressFieldNumber = 8;
   ::PROTOBUF_NAMESPACE_ID::uint32 progress() const;
   void set_progress(::PROTOBUF_NAMESPACE_ID::uint32 value);
 
@@ -3115,6 +3127,7 @@ class TransferProgressResponse :
 
   ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr task_id_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr task_name_;
   ::transfer::ResponseHeader* header_;
   ::PROTOBUF_NAMESPACE_ID::uint64 transferred_size_;
   int status_;
@@ -5953,7 +5966,58 @@ inline void TransferProgressResponse::set_allocated_task_id(std::string* task_id
   // @@protoc_insertion_point(field_set_allocated:transfer.TransferProgressResponse.task_id)
 }
 
-// .transfer.TransferStatus status = 3;
+// string task_name = 3;
+inline void TransferProgressResponse::clear_task_name() {
+  task_name_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline const std::string& TransferProgressResponse::task_name() const {
+  // @@protoc_insertion_point(field_get:transfer.TransferProgressResponse.task_name)
+  return task_name_.GetNoArena();
+}
+inline void TransferProgressResponse::set_task_name(const std::string& value) {
+  
+  task_name_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:transfer.TransferProgressResponse.task_name)
+}
+inline void TransferProgressResponse::set_task_name(std::string&& value) {
+  
+  task_name_.SetNoArena(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:transfer.TransferProgressResponse.task_name)
+}
+inline void TransferProgressResponse::set_task_name(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  task_name_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:transfer.TransferProgressResponse.task_name)
+}
+inline void TransferProgressResponse::set_task_name(const char* value, size_t size) {
+  
+  task_name_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:transfer.TransferProgressResponse.task_name)
+}
+inline std::string* TransferProgressResponse::mutable_task_name() {
+  
+  // @@protoc_insertion_point(field_mutable:transfer.TransferProgressResponse.task_name)
+  return task_name_.MutableNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline std::string* TransferProgressResponse::release_task_name() {
+  // @@protoc_insertion_point(field_release:transfer.TransferProgressResponse.task_name)
+  
+  return task_name_.ReleaseNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline void TransferProgressResponse::set_allocated_task_name(std::string* task_name) {
+  if (task_name != nullptr) {
+    
+  } else {
+    
+  }
+  task_name_.SetAllocatedNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), task_name);
+  // @@protoc_insertion_point(field_set_allocated:transfer.TransferProgressResponse.task_name)
+}
+
+// .transfer.TransferStatus status = 4;
 inline void TransferProgressResponse::clear_status() {
   status_ = 0;
 }
@@ -5967,7 +6031,7 @@ inline void TransferProgressResponse::set_status(::transfer::TransferStatus valu
   // @@protoc_insertion_point(field_set:transfer.TransferProgressResponse.status)
 }
 
-// uint64 transferred_size = 4;
+// uint64 transferred_size = 5;
 inline void TransferProgressResponse::clear_transferred_size() {
   transferred_size_ = PROTOBUF_ULONGLONG(0);
 }
@@ -5981,7 +6045,7 @@ inline void TransferProgressResponse::set_transferred_size(::PROTOBUF_NAMESPACE_
   // @@protoc_insertion_point(field_set:transfer.TransferProgressResponse.transferred_size)
 }
 
-// uint64 total_size = 5;
+// uint64 total_size = 6;
 inline void TransferProgressResponse::clear_total_size() {
   total_size_ = PROTOBUF_ULONGLONG(0);
 }
@@ -5995,7 +6059,7 @@ inline void TransferProgressResponse::set_total_size(::PROTOBUF_NAMESPACE_ID::ui
   // @@protoc_insertion_point(field_set:transfer.TransferProgressResponse.total_size)
 }
 
-// uint32 speed = 6;
+// uint32 speed = 7;
 inline void TransferProgressResponse::clear_speed() {
   speed_ = 0u;
 }
@@ -6009,7 +6073,7 @@ inline void TransferProgressResponse::set_speed(::PROTOBUF_NAMESPACE_ID::uint32 
   // @@protoc_insertion_point(field_set:transfer.TransferProgressResponse.speed)
 }
 
-// uint32 progress = 7;
+// uint32 progress = 8;
 inline void TransferProgressResponse::clear_progress() {
   progress_ = 0u;
 }

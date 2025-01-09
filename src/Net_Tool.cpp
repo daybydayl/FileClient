@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iomanip>
 #include <openssl/md5.h>
+#include <QDebug>
 #include "FileClient.h"
 
 // CRC32表
@@ -501,6 +502,92 @@ transfer::TransferProgressRequest Net_Tool::createTransferProgressRequest(const 
     return request;
 }
 
+// 统一的传输进度处理函数
+void Net_Tool::handleTransferProgress(const transfer::TransferProgressResponse& progress) {
+    // auto client = FileClient::instance();
+    // if (!client) {
+    //     qDebug() << "FileClient instance is null!";
+    //     return;
+    // }
+    
+    // 获取当前时间戳,用于计算速度
+    static std::map<std::string, std::chrono::steady_clock::time_point> lastUpdateTime;
+    static std::map<std::string, uint64_t> lastTransferredSize;
+    static std::mutex progressMutex; // 添加互斥锁保护静态变量
+    
+    auto now = std::chrono::steady_clock::now();
+    
+    double speed = 0;
+    std::string speedStr;
+    std::string remainingTime;
+    
+    {
+        std::lock_guard<std::mutex> lock(progressMutex);
+        // 计算传输速度
+        if (lastUpdateTime.find(progress.task_id()) != lastUpdateTime.end()) {
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                now - lastUpdateTime[progress.task_id()]).count();
+            if (duration > 0) {
+                auto sizeDiff = progress.transferred_size() - lastTransferredSize[progress.task_id()];
+                speed = (sizeDiff * 1000.0) / duration; // 字节/秒
+            }
+        }
+        
+        // 更新时间和大小记录
+        lastUpdateTime[progress.task_id()] = now;
+        lastTransferredSize[progress.task_id()] = progress.transferred_size();
+    }
+
+    // 格式化速度显示
+    if (speed < 1024) {
+        speedStr = std::to_string((int)speed) + " B/s";
+    } else if (speed < 1024*1024) {
+        speedStr = std::to_string((int)(speed/1024)) + " KB/s";
+    } else {
+        speedStr = std::to_string((int)(speed/(1024*1024))) + " MB/s";
+    }
+
+    // 计算剩余时间
+    if (speed > 0 && progress.status() == transfer::TRANSFERRING) {
+        uint64_t remaining_bytes = progress.total_size() - progress.transferred_size();
+        int seconds = (int)(remaining_bytes / speed);
+        int minutes = seconds / 60;
+        seconds %= 60;
+        remainingTime = std::to_string(minutes) + "分" + std::to_string(seconds) + "秒";
+    } else {
+        remainingTime = "--";
+    }
+
+    // 格式化状态
+    std::string status;
+    switch (progress.status()) {
+        case transfer::INIT: status = "初始化"; break;
+        case transfer::TRANSFERRING: status = "传输中"; break;
+        case transfer::COMPLETED: status = "已完成"; break;
+        case transfer::PAUSED: status = "已暂停"; break;
+        default: status = "未知";
+    }
+
+    // 通过FileClient更新UI显示
+    FileClient::instance()->updateTransferProgress(
+        progress.task_id(),
+        progress.task_name(),
+        progress.total_size(),
+        progress.progress(),
+        status,
+        speedStr,
+        remainingTime
+    );
+
+    // 如果传输完成,清理记录
+    if (progress.status() == transfer::COMPLETED) {
+        std::lock_guard<std::mutex> lock(progressMutex);
+        lastUpdateTime.erase(progress.task_id());
+        lastTransferredSize.erase(progress.task_id());
+    }
+}
+
+// 修改startUploadTask和startDownloadTask中的progressCallback参数
 void Net_Tool::startUploadTask(const std::string& fileName, const std::string& targetPath,
     std::function<void(const transfer::TransferProgressResponse&)> progressCallback) {
     std::string taskId = generateTaskId();
@@ -510,7 +597,7 @@ void Net_Tool::startUploadTask(const std::string& fileName, const std::string& t
     task->taskId = taskId;
     task->fileName = fileName;
     task->targetPath = targetPath;
-    task->progressCallback = progressCallback;
+    task->progressCallback = handleTransferProgress;  // 使用统一的进度处理函数
     task->isPaused = false;
     task->isCancelled = false;
     
@@ -532,7 +619,7 @@ void Net_Tool::startDownloadTask(const std::string& fileName, const std::string&
     task->taskId = generateTaskId();
     task->fileName = fileName;
     task->targetPath = targetPath;
-    task->progressCallback = progressCallback;
+    task->progressCallback = handleTransferProgress;  // 使用统一的进度处理函数
     task->isPaused = false;
     task->isCancelled = false;
 
@@ -571,6 +658,7 @@ void Net_Tool::handleUploadTask(TransferTask* task)
         file.close();
         return;
     }
+    uint64_t file_total_len = 0;//以获取文件数据长度
     
     transfer::UploadResponse response;
     do
@@ -585,6 +673,7 @@ void Net_Tool::handleUploadTask(TransferTask* task)
         if(response.results().size() > 0
         && response.header().session_id() == request.header().session_id())
         {
+            file_total_len += request.files(0).data().length();//暂时只针对单个文件
             auto fileInfo = response.results(0);
             if(fileInfo.success() == true)
             {//上传成功
@@ -593,10 +682,23 @@ void Net_Tool::handleUploadTask(TransferTask* task)
                 if (task->progressCallback) {
                     transfer::TransferProgressResponse progress;
                     progress.set_task_id(task->taskId);
-                    progress.set_status(next_sequence > 0 ? transfer::TRANSFERRING : transfer::COMPLETED);
-                    progress.set_transferred_size(next_sequence*CHUNK_SIZE);
+                    progress.set_task_name(task->fileName);
                     progress.set_total_size(task->fileSize);
-                    progress.set_progress(static_cast<uint32_t>((next_sequence * CHUNK_SIZE * 100) / task->fileSize));
+
+                    if (next_sequence == -1 || next_sequence * CHUNK_SIZE >= task->fileSize) {
+                        progress.set_status(transfer::COMPLETED);
+                        progress.set_transferred_size(task->fileSize);
+                        progress.set_progress(100);
+                    } else {
+                        progress.set_status(transfer::TRANSFERRING);
+                        progress.set_transferred_size(file_total_len);
+                        if (task->fileSize > 0) {
+                            progress.set_progress(static_cast<uint32_t>((file_total_len * 100) / task->fileSize));
+                        } else {
+                            progress.set_progress(0); // 防止除以零
+                        }
+                    }
+
                     task->progressCallback(progress);
                 }
                 if(next_sequence > 0)
@@ -724,6 +826,7 @@ void Net_Tool::handleDownloadTask(TransferTask* task) {
             if (task->progressCallback) {
                 transfer::TransferProgressResponse progress;
                 progress.set_task_id(task->taskId);
+                progress.set_task_name(task->fileName);
                 progress.set_status(file_total_len < task->fileSize ? 
                                     transfer::TRANSFERRING : transfer::COMPLETED);
                 progress.set_transferred_size(file_total_len);
@@ -786,6 +889,7 @@ void Net_Tool::handleDownloadTask(TransferTask* task) {
                 if (task->progressCallback) {
                     transfer::TransferProgressResponse progress;
                     progress.set_task_id(task->taskId);
+                    progress.set_task_name(task->fileName);
                     progress.set_status(file_total_len < task->fileSize ? 
                                         transfer::TRANSFERRING : transfer::COMPLETED);
                     progress.set_transferred_size(file_total_len);
@@ -847,11 +951,11 @@ void Net_Tool::handleDownloadTask(TransferTask* task) {
         if (task->progressCallback) {
             transfer::TransferProgressResponse progress;
             progress.set_task_id(task->taskId);
-            progress.set_status(fileInfo.chunk_size()*fileInfo.chunk_sequence() < task->fileSize ? 
-                                transfer::TRANSFERRING : transfer::COMPLETED);
-            progress.set_transferred_size(fileInfo.chunk_size()*fileInfo.chunk_sequence());
+            progress.set_task_name(task->fileName);
+            progress.set_status(transfer::COMPLETED);
+            progress.set_transferred_size(task->fileSize);
             progress.set_total_size(task->fileSize);
-            progress.set_progress(static_cast<uint32_t>((fileInfo.chunk_size()*fileInfo.chunk_sequence() * 100) / task->fileSize));
+            progress.set_progress(100);
             task->progressCallback(progress);
         }
 
