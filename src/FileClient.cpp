@@ -514,14 +514,23 @@ void FileClient::setupTheme()
 
 void FileClient::toggleWindowOnTop()
 {
-    m_isOnTop = !m_isOnTop;
-    
+#ifdef _WIN32
     HWND hwnd = (HWND)this->winId();
     SetWindowPos(hwnd, 
                 m_isOnTop ? HWND_TOPMOST : HWND_NOTOPMOST,
                 0, 0, 0, 0,
                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-    
+#else
+    // Linux下使用Qt的窗口标志来实现置顶
+    if (m_isOnTop) {
+        setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+    } else {
+        setWindowFlags(windowFlags() & ~Qt::WindowStaysOnTopHint);
+    }
+    show(); // 需要重新显示窗口以使标志生效
+#endif
+
+    m_isOnTop = !m_isOnTop;
     m_onTopButton->setChecked(m_isOnTop);
 }
 

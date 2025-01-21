@@ -225,6 +225,7 @@ bool Net_Tool::receiveMessage(T& message, char type) {
     if(ret <= 0) {
         return false;
     }
+
     //接收数据
     res = receiveData(buff, ret);
     if(!res) {
@@ -271,7 +272,7 @@ bool Net_Tool::receiveMessage(T& message, char type) {
 int Net_Tool::peek_read(char *buf, int len) {
 #ifndef _WIN32
     // 使用临时缓冲区进行MSG_PEEK
-    ret = recv(m_sock, peek_buf, sizeof(peek_buf), MSG_PEEK);
+    int ret = recv(m_sock, buf, len, MSG_PEEK);
     if(-1 == ret)
     {
         perror("readLine error -1");
@@ -452,10 +453,10 @@ transfer::UploadRequest Net_Tool::createUploadRequest(
     fileInfo->set_target_path(targetPath);//目标路径
     fileInfo->set_file_size(fileSize);//文件大小
     fileInfo->set_md5(calculateFileMD5(convertToGBK(fileName)));//文件MD5
-    fileInfo->set_need_chunk(fileSize > chunkSize);//是否分片
+    fileInfo->set_need_chunk(fileSize > (uint64_t)chunkSize);//是否分片
     fileInfo->set_chunk_size(chunkSize);//分片大小
     fileInfo->set_chunk_sequence(0);//分片序号
-    uint64_t read_size = fileSize>chunkSize?chunkSize:fileSize;
+    uint64_t read_size = (uint64_t)fileSize>chunkSize?chunkSize:(uint64_t)fileSize;
 
     //file.seekg(read_size,std::ios::beg);//跳过已经读取的数据
     std::vector<char> chunk_data(read_size);

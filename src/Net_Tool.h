@@ -76,7 +76,7 @@ public:
     transfer::TransferProgressRequest createTransferProgressRequest(const std::string& taskId);
 
     // 处理传输进度
-    static void Net_Tool::handleTransferProgress(const transfer::TransferProgressResponse& progress);
+    static void handleTransferProgress(const transfer::TransferProgressResponse& progress);
 
     // 开始文件上传任务
     void startUploadTask(const std::string& fileName, const std::string& targetPath,

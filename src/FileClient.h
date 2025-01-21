@@ -14,6 +14,10 @@
 #include <QScreen>
 #include <QApplication>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include "Net_Tool.h"
 #include "AddressBar.h"
 #include "FileListView.h"

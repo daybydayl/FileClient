@@ -421,44 +421,30 @@ void FileTabPage::showProperties(const QString& filePath)
     dialog.setMinimumWidth(400);
     
     QVBoxLayout* layout = new QVBoxLayout(&dialog);
-    
-    // 创建属性表单
     QFormLayout* formLayout = new QFormLayout;
+    
+    // 添加文件信息
     formLayout->addRow(tr("名称:"), new QLabel(fileInfo.fileName()));
-    formLayout->addRow(tr("类型:"), new QLabel(fileInfo.isDir() ? tr("文件夹") : tr("文件")));
-    formLayout->addRow(tr("位置:"), new QLabel(fileInfo.path()));
+    formLayout->addRow(tr("路径:"), new QLabel(fileInfo.filePath()));
+    formLayout->addRow(tr("大小:"), new QLabel(formatFileSize(fileInfo.size())));
     
-    // 计算文件或目录大小
-    // 获取文件或目录的初始大小
-    qint64 totalSize = fileInfo.size();
-    // 如果是目录,则需要递归计算其中所有文件的大小
-    if(fileInfo.isDir()) {
-        // 创建目录对象
-        QDir dir(filePath);
-        // 获取目录下所有文件和子目录,包括隐藏文件和系统文件
-        // QDir::DirsFirst表示目录优先排序
-        QFileInfoList fileList = dir.entryInfoList(QDir::Files | QDir::Hidden | QDir::System | QDir::AllDirs | QDir::NoDotAndDotDot, QDir::DirsFirst);
-        // 遍历目录中的所有项目
-        for(const QFileInfo& fi : fileList) {
-            if(fi.isFile()) {
-                // 如果是文件,直接加上文件大小
-                totalSize += fi.size();
-            } else if(fi.isDir()) {
-                // 如果是子目录,使用QDirIterator递归遍历其中的所有文件
-                QDirIterator it(fi.absoluteFilePath(), QDir::Files | QDir::Hidden | QDir::System, QDirIterator::Subdirectories);
-                while(it.hasNext()) {
-                    it.next();
-                    // 累加子目录中每个文件的大小
-                    totalSize += it.fileInfo().size();
-                }
-            }
-        }
-    }
-    formLayout->addRow(tr("大小:"), new QLabel(formatFileSize(totalSize)));
-    
-    formLayout->addRow(tr("创建时间:"), new QLabel(fileInfo.birthTime().toString()));
+    // 修改这里，使用lastModified()替代birthTime()
     formLayout->addRow(tr("修改时间:"), new QLabel(fileInfo.lastModified().toString()));
-    formLayout->addRow(tr("访问时间:"), new QLabel(fileInfo.lastRead().toString()));
+    
+    // 添加其他时间信息
+    formLayout->addRow(tr("最后访问:"), new QLabel(fileInfo.lastRead().toString()));
+    formLayout->addRow(tr("最后修改:"), new QLabel(fileInfo.lastModified().toString()));
+    
+    // 添加权限信息
+    QString permissions;
+    if(fileInfo.isReadable()) permissions += tr("可读 ");
+    if(fileInfo.isWritable()) permissions += tr("可写 ");
+    if(fileInfo.isExecutable()) permissions += tr("可执行");
+    formLayout->addRow(tr("权限:"), new QLabel(permissions));
+    
+    // 添加类型信息
+    QString type = fileInfo.isDir() ? tr("文件夹") : tr("文件");
+    formLayout->addRow(tr("类型:"), new QLabel(type));
     
     layout->addLayout(formLayout);
     
