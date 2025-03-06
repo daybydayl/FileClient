@@ -124,4 +124,4 @@ FileClient/
 - 使用CMake构建系统
 - 使用Protocol Buffers进行数据序列化
 - 网络传输使用TCP协议
-- 文件传输支持分片和断点续传
+- 文件传输支持分
